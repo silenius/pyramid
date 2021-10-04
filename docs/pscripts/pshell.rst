@@ -3,11 +3,7 @@
 
 .. _pshell_script:
 
-``pshell``
-----------
+.. autoprogram:: pyramid.scripts.pshell:PShellCommand.parser
+    :prog: pshell
 
-.. program-output:: pshell --help
-   :prompt:
-   :shell:
-
-.. seealso:: :ref:`interactive_shell`
+.. seealso:: :ref:`interactive_shell` and :ref:`running-pscripts`.

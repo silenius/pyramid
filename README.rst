@@ -1,17 +1,13 @@
 Pyramid
 =======
 
-.. image:: https://travis-ci.org/Pylons/pyramid.png?branch=master
-        :target: https://travis-ci.org/Pylons/pyramid
-        :alt: Master Travis CI Status
+.. image:: https://github.com/Pylons/Pyramid/workflows/Build%20and%20test/badge.svg?branch=master
+        :target: https://github.com/Pylons/Pyramid/actions?query=workflow%3A%22Build+and+test%22
+        :alt: master Travis CI Status
 
 .. image:: https://readthedocs.org/projects/pyramid/badge/?version=master
-        :target: http://docs.pylonsproject.org/projects/pyramid/en/master/
-        :alt: Master Documentation Status
-
-.. image:: https://readthedocs.org/projects/pyramid/badge/?version=latest
-        :target: http://docs.pylonsproject.org/projects/pyramid/en/latest/
-        :alt: Latest Documentation Status
+        :target: https://docs.pylonsproject.org/projects/pyramid/en/master
+        :alt: master Documentation Status
 
 .. image:: https://img.shields.io/badge/irc-freenode-blue.svg
         :target: https://webchat.freenode.net/?channels=pyramid
@@ -23,28 +19,28 @@ and deployment more fun, more predictable, and more productive.
 
 .. code-block:: python
 
-   from wsgiref.simple_server import make_server
-   from pyramid.config import Configurator
-   from pyramid.response import Response
+    from wsgiref.simple_server import make_server
+    from pyramid.config import Configurator
+    from pyramid.response import Response
 
-   def hello_world(request):
-       return Response('Hello %(name)s!' % request.matchdict)
+    def hello_world(request):
+        return Response('Hello World!')
 
-   if __name__ == '__main__':
-       config = Configurator()
-       config.add_route('hello', '/hello/{name}')
-       config.add_view(hello_world, route_name='hello')
-       app = config.make_wsgi_app()
-       server = make_server('0.0.0.0', 8080, app)
-       server.serve_forever()
+    if __name__ == '__main__':
+        with Configurator() as config:
+            config.add_route('hello', '/')
+            config.add_view(hello_world, route_name='hello')
+            app = config.make_wsgi_app()
+        server = make_server('0.0.0.0', 6543, app)
+        server.serve_forever()
 
-Pyramid is a project of the `Pylons Project <http://www.pylonsproject.org/>`_.
+Pyramid is a project of the `Pylons Project <https://pylonsproject.org>`_.
 
 Support and Documentation
 -------------------------
 
 See `Pyramid Support and Development
-<http://docs.pylonsproject.org/projects/pyramid/en/latest/#support-and-development>`_
+<https://docs.pylonsproject.org/projects/pyramid/en/latest/#support-and-development>`_
 for documentation, reporting bugs, and getting support.
 
 Developing and Contributing

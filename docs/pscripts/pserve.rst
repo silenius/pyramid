@@ -3,11 +3,7 @@
 
 .. _pserve_script:
 
-``pserve``
-----------
+.. autoprogram:: pyramid.scripts.pserve:PServeCommand.parser
+    :prog: pserve
 
-.. program-output:: pserve --help
-   :prompt:
-   :shell:
-
-.. seealso:: :ref:`running_the_project_application`
+.. seealso:: :ref:`running_the_project_application` and :ref:`running-pscripts`.

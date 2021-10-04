@@ -1,13 +1,9 @@
 .. index::
-   single: pdistreport; --help
+    single: pdistreport; --help
 
 .. _pdistreport_script:
 
-``pdistreport``
----------------
+.. autoprogram:: pyramid.scripts.pdistreport:get_parser()
+    :prog: pdistreport
 
-.. program-output:: pdistreport --help
-   :prompt:
-   :shell:
-
-.. seealso:: :ref:`showing_distributions`
+.. seealso:: :ref:`showing_distributions` and :ref:`running-pscripts`.

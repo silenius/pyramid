@@ -117,11 +117,11 @@ reading the code that performs a typical "unnamed utility" lookup using the
 :func:`zope.component.getUtility` global API:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   from pyramid.interfaces import ISettings
-   from zope.component import getUtility
-   settings = getUtility(ISettings)
+    from pyramid.interfaces import ISettings
+    from zope.component import getUtility
+    settings = getUtility(ISettings)
 
 After this code runs, ``settings`` will be a Python dictionary.  But it's
 unlikely that any civilian would know that just by reading the code.  There
@@ -181,33 +181,32 @@ developer needs to understand a ZCA concept or API during the creation of a
 
 Instead the framework hides the presence of the ZCA registry behind
 special-purpose API functions that *do* use ZCA APIs.  Take for example the
-``pyramid.security.authenticated_userid`` function, which returns the userid
+``request.authenticated_userid`` function, which returns the userid
 present in the current request or ``None`` if no userid is present in the
 current request.  The application developer calls it like so:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   from pyramid.security import authenticated_userid
-   userid = authenticated_userid(request)
+    userid = request.authenticated_userid
 
 They now have the current user id.
 
 Under its hood however, the implementation of ``authenticated_userid`` is this:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   def authenticated_userid(request):
-       """ Return the userid of the currently authenticated user or
-       ``None`` if there is no authentication policy in effect or there
-       is no currently authenticated user. """
+    def authenticated_userid(request):
+        """ Return the userid of the currently authenticated user or
+        ``None`` if there is no security policy in effect or there
+        is no currently authenticated user. """
 
-       registry = request.registry # the ZCA component registry
-       policy = registry.queryUtility(IAuthenticationPolicy)
-       if policy is None:
-           return None
-       return policy.authenticated_userid(request)
+        registry = request.registry # the ZCA component registry
+        policy = registry.queryUtility(ISecurityPolicy)
+        if policy is None:
+            return None
+        return policy.authenticated_userid(request)
 
 Using such wrappers, we strive to always hide the ZCA API from application
 developers.  Application developers should just never know about the ZCA API;
@@ -263,21 +262,21 @@ In all core code, we've made use of ZCA global API functions, such as
 instead of the rule.  So instead of:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   from pyramid.interfaces import IAuthenticationPolicy
-   from zope.component import getUtility
-   policy = getUtility(IAuthenticationPolicy)
+    from pyramid.interfaces import ISecurityPolicy
+    from zope.component import getUtility
+    policy = getUtility(ISecurityPolicy)
 
 :app:`Pyramid` code will usually do:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   from pyramid.interfaces import IAuthenticationPolicy
-   from pyramid.threadlocal import get_current_registry
-   registry = get_current_registry()
-   policy = registry.getUtility(IAuthenticationPolicy)
+    from pyramid.interfaces import ISecurityPolicy
+    from pyramid.threadlocal import get_current_registry
+    registry = get_current_registry()
+    policy = registry.getUtility(ISecurityPolicy)
 
 While the latter is more verbose, it also arguably makes it more obvious what's
 going on.  All of the :app:`Pyramid` core code uses this pattern rather than
@@ -483,20 +482,20 @@ accept positional arguments which match information in an associated "urlconf"
 such as ``r'^polls/(?P<poll_id>\d+)/$``:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   def aview(request, poll_id):
-       return HttpResponse(poll_id)
+    def aview(request, poll_id):
+        return HttpResponse(poll_id)
 
 Zope likewise allows you to add arbitrary keyword and positional arguments to
 any method of a resource object found via traversal:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   from persistent import Persistent
+    from persistent import Persistent
 
-   class MyZopeObject(Persistent):
+    class MyZopeObject(Persistent):
         def aview(self, a, b, c=None):
             return '%s %s %c' % (a, b, c)
 
@@ -591,7 +590,7 @@ extensibility because it must be deployed in multiple locations.
 Pyramid Is Too Big
 ------------------
 
-"The :app:`Pyramid` compressed tarball is larger than 2MB.  It must beenormous!"
+"The :app:`Pyramid` compressed tarball is larger than 2MB.  It must be enormous!"
 
 No.  We just ship it with docs, test code, and scaffolding.  Here's a breakdown
 of what's included in subdirectories of the package tree:
@@ -989,7 +988,7 @@ the following:
   traverses by registering one or more adapters.  As a result of being able
   to either replace the larger component entirely or turn knobs on the
   default implementation of the larger component, no one understands when (or
-  whether) they should ever override the larger component entrirely.  This
+  whether) they should ever override the larger component entirely.  This
   results, over time, in a rusting together of the larger "replaceable"
   component and the framework itself because people come to depend on the
   availability of the default component in order just to turn its knobs. The
@@ -1007,12 +1006,12 @@ Microframeworks have smaller Hello World programs
 -------------------------------------------------
 
 Self-described "microframeworks" exist. `Bottle
-<http://bottlepy.org/docs/dev/index.html>`_ and `Flask
-<http://flask.pocoo.org/>`_ are two that are becoming popular. `Bobo
+<https://bottlepy.org/docs/dev/>`_ and `Flask
+<https://palletsprojects.com/p/flask/>`_ are two that are becoming popular. `Bobo
 <https://bobo.readthedocs.io/en/latest/>`_ doesn't describe itself as a
 microframework, but its intended user base is much the same. Many others exist.
 We've even (only as a teaching tool, not as any sort of official project)
-`created one using Pyramid <http://static.repoze.org/casts/videotags.html>`_.
+`created one using Pyramid <https://web.archive.org/web/20190118040819/http://static.repoze.org/casts/videotags.html>`_.
 The videos use BFG, a precursor to Pyramid, but the resulting code is
 `available for Pyramid too <https://github.com/Pylons/groundhog>`_).
 Microframeworks are small frameworks with one common feature: each allows its
@@ -1433,7 +1432,7 @@ object which *is not logically global*:
         # credentials were invalid    
 
 The `Pylons 1.X
-<http://docs.pylonsproject.org/projects/pylons-webframework/en/latest/>`_
+<https://docs.pylonsproject.org/projects/pylons-webframework/en/latest/>`_
 web framework uses a similar strategy.  It calls these things "Stacked Object
 Proxies", so, for purposes of this discussion, I'll do so as well.
 
@@ -1527,22 +1526,22 @@ inlined comments take into account what we've discussed in the
 :ref:`microframeworks_smaller_hello_world` section.
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   from pyramid.response import Response # explicit response, no thread local
-   from wsgiref.simple_server import make_server # explicitly WSGI
+    from wsgiref.simple_server import make_server  # explicitly WSGI
+    from pyramid.config import Configurator  # to configure app registry
+    from pyramid.response import Response  # explicit response, no threadlocal
 
-   def hello_world(request):  # accepts a request; no request thread local reqd
-       # explicit response object means no response threadlocal
-       return Response('Hello world!')
+    def hello_world(request):  # accept a request; no request threadlocal reqd
+        # explicit response object means no response threadlocal
+        return Response('Hello world!')
 
-   if __name__ == '__main__':
-       from pyramid.config import Configurator
-       config = Configurator()       # no global application object
-       config.add_view(hello_world)  # explicit non-decorator registration
-       app = config.make_wsgi_app()  # explicitly WSGI
-       server = make_server('0.0.0.0', 8080, app)
-       server.serve_forever()        # explicitly WSGI
+    if __name__ == '__main__':
+        with Configurator() as config:    # no global application object
+            config.add_view(hello_world)  # explicit non-decorator registration
+            app = config.make_wsgi_app()  # explicitly WSGI
+        server = make_server('0.0.0.0', 8080, app)
+        server.serve_forever()            # explicitly WSGI
 
 
 Pyramid doesn't offer pluggable apps
@@ -1622,10 +1621,10 @@ reads something like this:
 
 .. code-block:: text
 
-   had a quick look at pyramid ... too complex to me and not really
-   understand for which benefits.. I feel should consider whether it's time
-   for me to step back to django .. I always hated zope (useless ?)
-   complexity and I love simple way of thinking
+    had a quick look at pyramid ... too complex to me and not really
+    understand for which benefits.. I feel should consider whether it's time
+    for me to step back to django .. I always hated zope (useless ?)
+    complexity and I love simple way of thinking
 
 (Paraphrased from a real email, actually.)
 
@@ -1634,30 +1633,31 @@ Let's take this criticism point-by-point.
 Too Complex
 +++++++++++
 
-If you can understand this hello world program, you can use Pyramid:
+If you can understand this "hello world" program, you can use Pyramid:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   from wsgiref.simple_server import make_server
-   from pyramid.config import Configurator
-   from pyramid.response import Response
+    from wsgiref.simple_server import make_server
+    from pyramid.config import Configurator
+    from pyramid.response import Response
 
-   def hello_world(request):
-       return Response('Hello world!')
+    def hello_world(request):
+        return Response('Hello World!')
 
-   if __name__ == '__main__':
-       config = Configurator()
-       config.add_view(hello_world)
-       app = config.make_wsgi_app()
-       server = make_server('0.0.0.0', 8080, app)
-       server.serve_forever()
+    if __name__ == '__main__':
+        with Configurator() as config:
+            config.add_route('hello', '/')
+            config.add_view(hello_world, route_name='hello')
+            app = config.make_wsgi_app()
+        server = make_server('0.0.0.0', 6543, app)
+        server.serve_forever()
 
 Pyramid has over 1200 pages of documentation (printed), covering topics from
 the very basic to the most advanced. *Nothing* is left undocumented, quite
 literally.  It also has an *awesome*, very helpful community.  Visit the
 `#pyramid IRC channel on freenode.net
-<https://webchat.freenode.net/?channels=pyramid>`_ and see.
+<https://webchat.freenode.net/#pyramid>`_ and see.
 
 Hate Zope
 +++++++++
@@ -1689,7 +1689,7 @@ some sort of monolithic thing, and a lot of its software is usable
 externally.  And while it's not really the job of this document to defend it,
 Zope has been around for over 10 years and has an incredibly large, active
 community.  If you don't believe this,
-http://pypi-ranking.info/author is an eye-opening reality
+https://pypi.org/search/?q=zope is an eye-opening reality
 check.
 
 Love Simplicity

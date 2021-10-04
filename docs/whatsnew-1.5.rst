@@ -276,7 +276,7 @@ The feature additions in Pyramid 1.5 follow.
 - You can now generate "hybrid" urldispatch/traversal URLs more easily by using
   the new ``route_name``, ``route_kw`` and ``route_remainder_name`` arguments
   to :meth:`~pyramid.request.Request.resource_url` and
-  :meth:`~pyuramid.request.Request.resource_path`.  See
+  :meth:`~pyramid.request.Request.resource_path`.  See
   :ref:`generating_hybrid_urls`.
 
 - A new http exception superclass named
@@ -315,7 +315,7 @@ The feature additions in Pyramid 1.5 follow.
   passing the predicate factory directly, you can pass a dotted name which 
   refers to the factory.
 
-- :func:`pyramid.path.package_name` no longer thows an exception when resolving 
+- :func:`pyramid.path.package_name` no longer throws an exception when resolving 
   the package name for namespace packages that have no ``__file__`` attribute.
 
 - An authorization API has been added as a method of the request:
@@ -371,7 +371,7 @@ The feature additions in Pyramid 1.5 follow.
 Other Backwards Incompatibilities
 ---------------------------------
 
-- Modified the :meth:`~pyramid.request.Reuqest.current_route_url` method. The
+- Modified the :meth:`~pyramid.request.Request.current_route_url` method. The
   method previously returned the URL without the query string by default, it
   now does attach the query string unless it is overriden.
 
@@ -441,7 +441,7 @@ Other Backwards Incompatibilities
   since Pyramid 1.1.  Use methods of ``request.environ`` (a real dictionary)
   instead.
 
-- Removed ancient backwards compatibily hack in
+- Removed ancient backwards compatibility hack in
   ``pyramid.traversal.DefaultRootFactory`` which populated the ``__dict__`` of
   the factory with the matchdict values for compatibility with BFG 0.9.
 

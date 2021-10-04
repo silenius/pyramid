@@ -1,13 +1,9 @@
 .. index::
-   single: prequest; --help
+    single: prequest; --help
 
 .. _prequest_script:
 
-``prequest``
-------------
+.. autoprogram:: pyramid.scripts.prequest:PRequestCommand.parser
+    :prog: prequest
 
-.. program-output:: prequest --help
-   :prompt:
-   :shell:
-
-.. seealso:: :ref:`invoking_a_request`
+.. seealso:: :ref:`invoking_a_request` and :ref:`running-pscripts`.

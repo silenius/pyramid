@@ -2,13 +2,13 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.security import (
     remember,
     forget,
-    )
+)
 
 from pyramid.view import (
     view_config,
     view_defaults,
     forbidden_view_config
-    )
+)
 
 from .security import (
     USERS,
@@ -45,7 +45,8 @@ class TutorialViews:
         if 'form.submitted' in request.params:
             login = request.params['login']
             password = request.params['password']
-            if check_password(password, USERS.get(login)):
+            hashed_pw = USERS.get(login)
+            if hashed_pw and check_password(password, hashed_pw):
                 headers = remember(request, login)
                 return HTTPFound(location=came_from,
                                  headers=headers)

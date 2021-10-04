@@ -17,6 +17,7 @@
     .. automethod:: end
     .. automethod:: include
     .. automethod:: make_wsgi_app()
+    .. automethod:: route_prefix_context
     .. automethod:: scan
 
   :methodcategory:`Adding Routes and Views`
@@ -26,6 +27,7 @@
     .. automethod:: add_view
     .. automethod:: add_notfound_view
     .. automethod:: add_forbidden_view
+    .. automethod:: add_exception_view
 
   :methodcategory:`Adding an Event Subscriber`
 
@@ -33,16 +35,17 @@
 
   :methodcategory:`Using Security`
 
+     .. automethod:: set_security_policy
      .. automethod:: set_authentication_policy
      .. automethod:: set_authorization_policy
      .. automethod:: set_default_csrf_options
+     .. automethod:: set_csrf_storage_policy
      .. automethod:: set_default_permission
      .. automethod:: add_permission
 
    :methodcategory:`Extending the Request Object`
 
      .. automethod:: add_request_method
-     .. automethod:: set_request_property
 
    :methodcategory:`Using I18N`
 
@@ -60,6 +63,7 @@
 
    :methodcategory:`Hooking Pyramid Behavior`
 
+     .. automethod:: add_accept_view_order
      .. automethod:: add_renderer
      .. automethod:: add_resource_url_adapter
      .. automethod:: add_response_adapter
@@ -69,6 +73,7 @@
      .. automethod:: add_subscriber_predicate
      .. automethod:: add_view_predicate
      .. automethod:: add_view_deriver
+     .. automethod:: set_execution_policy
      .. automethod:: set_request_factory
      .. automethod:: set_root_factory
      .. automethod:: set_session_factory

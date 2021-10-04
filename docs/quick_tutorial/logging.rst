@@ -15,7 +15,7 @@ It's important to know what is going on inside our web application. In
 development we might need to collect some output. In production, we might need
 to detect problems when other people use the site. We need *logging*.
 
-Fortunately Pyramid uses the normal Python approach to logging. The scaffold
+Fortunately Pyramid uses the normal Python approach to logging. The project
 generated in your ``development.ini`` has a number of lines that configure the
 logging for you to some reasonable defaults. You then see messages sent by
 Pyramid, for example, when a new request comes in.
@@ -36,13 +36,13 @@ Steps
 
    .. code-block:: bash
 
-    $ cd ..; cp -r view_classes logging; cd logging
-    $ $VENV/bin/pip install -e .
+       cd ..; cp -r view_classes logging; cd logging
+       $VENV/bin/pip install -e .
 
 #. Extend ``logging/tutorial/views.py`` to log a message:
 
    .. literalinclude:: logging/tutorial/views.py
-    :linenos:
+       :linenos:
 
 #. Finally let's edit ``development.ini`` configuration file to enable logging
    for our Pyramid application:
@@ -54,15 +54,15 @@ Steps
 
    .. code-block:: bash
 
-    $ $VENV/bin/py.test tutorial/tests.py -q
-    ....
-    4 passed in 0.41 seconds
+       $VENV/bin/pytest tutorial/tests.py -q
+       ....
+       4 passed in 0.41 seconds
 
 #. Run your Pyramid application with:
 
    .. code-block:: bash
 
-    $ $VENV/bin/pserve development.ini --reload
+       $VENV/bin/pserve development.ini --reload
 
 #. Open http://localhost:6543/ and http://localhost:6543/howdy in your browser.
    Note, both in the console and in the debug toolbar, the message that you

@@ -11,7 +11,7 @@ Python packages, no ``pip install -e .``, no other machinery.
 Background
 ==========
 
-Microframeworks are all the rage these days. "Microframework" is a marketing
+Microframeworks were all the rage, until the next shiny thing came along. "Microframework" is a marketing
 term, not a technical one. They have a low mental overhead: they do so little,
 the only things you have to worry about are *your things*.
 
@@ -49,18 +49,18 @@ Steps
 
    .. code-block:: bash
 
-    $ mkdir hello_world; cd hello_world
+       cd ~/projects/quick_tutorial; mkdir hello_world; cd hello_world
 
 #. Copy the following into ``hello_world/app.py``:
 
    .. literalinclude:: hello_world/app.py
-    :linenos:
+       :linenos:
 
 #. Run the application:
 
    .. code-block:: bash
 
-    $ $VENV/bin/python app.py
+       $VENV/bin/python app.py
 
 #. Open http://localhost:6543/ in your browser.
 
@@ -75,7 +75,7 @@ explanation:
    "Start here when running from the command line", rather than when this
    module is imported.
 
-#. *Lines 12-14*. Use Pyramid's :term:`configurator` to connect :term:`view`
+#. *Lines 12-14*. Use Pyramid's :term:`configurator` in a :term:`context manager` to connect :term:`view`
    code to a particular URL :term:`route`.
 
 #. *Lines 6-8*. Implement the view code that generates the :term:`response`.
@@ -95,13 +95,13 @@ Extra credit
 
    .. code-block:: python
 
-      print('Incoming request')
+       print('Incoming request')
 
    ...instead of:
 
    .. code-block:: python
 
-      print 'Incoming request'
+       print 'Incoming request'
 
 #. What happens if you return a string of HTML? A sequence of integers?
 

@@ -12,7 +12,7 @@ Background
 ==========
 
 So far our views have been simple, free-standing functions. Many times your
-views are related to one another. They may be different ways to look at or work
+views are related to one another. They may consist of different ways to look at or work
 on the same data, or be a REST API that handles multiple operations. Grouping
 these views together as a :ref:`view class <class_as_view>` makes sense:
 
@@ -37,42 +37,38 @@ Objectives
 Steps
 =====
 
-#. First we copy the results of the previous step:
+#.  First we copy the results of the previous step:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-    $ cd ..; cp -r templating view_classes; cd view_classes
-    $ $VENV/bin/pip install -e .
+        cd ..; cp -r templating view_classes; cd view_classes
+        $VENV/bin/pip install -e .
 
-#. Our ``view_classes/tutorial/views.py`` now has a view class with our two
-   views:
+#.  Our ``view_classes/tutorial/views.py`` now has a view class with our two views:
 
-   .. literalinclude:: view_classes/tutorial/views.py
-    :linenos:
+    .. literalinclude:: view_classes/tutorial/views.py
+        :linenos:
 
-#. Our unit tests in ``view_classes/tutorial/tests.py`` don't run, so let's
-   modify them to import the view class, and make an instance before getting a
-   response:
+#.  Our unit tests in ``view_classes/tutorial/tests.py`` don't run, so let's modify them to import the view class, and make an instance before getting a response:
 
-   .. literalinclude:: view_classes/tutorial/tests.py
-    :linenos:
+    .. literalinclude:: view_classes/tutorial/tests.py
+        :linenos:
 
-#. Now run the tests:
+#.  Now run the tests:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
+        $VENV/bin/pytest tutorial/tests.py -q
+        ....
+        4 passed in 0.34 seconds
 
-    $ $VENV/bin/py.test tutorial/tests.py -q
-    ....
-    4 passed in 0.34 seconds
+#.  Run your Pyramid application with:
 
-#. Run your Pyramid application with:
+    .. code-block:: bash
 
-   .. code-block:: bash
+        $VENV/bin/pserve development.ini --reload
 
-    $ $VENV/bin/pserve development.ini --reload
-
-#. Open http://localhost:6543/ and http://localhost:6543/howdy in your browser.
+#.  Open http://localhost:6543/ and http://localhost:6543/howdy in your browser.
 
 
 Analysis
@@ -82,7 +78,7 @@ To ease the transition to view classes, we didn't introduce any new
 functionality. We simply changed the view functions to methods on a view class,
 then updated the tests.
 
-In our ``TutorialViews`` view class, you can see that our two view classes are
+In our ``TutorialViews`` view class, you can see that our two view functions are
 logically grouped together as methods on a common class. Since the two views
 shared the same template, we could move that to a ``@view_defaults`` decorator
 at the class level.

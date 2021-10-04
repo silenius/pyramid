@@ -38,24 +38,18 @@ Glossary
      "Repoze" is essentially a "brand" of software developed by `Agendaless
      Consulting <https://agendaless.com>`_ and a set of contributors.  The
      term has no special intrinsic meaning.  The project's `website
-     <http://repoze.org>`_ has more information.  The software developed
+     <https://web.archive.org/web/20190127155548/http://repoze.org/>`_ has more information.  The software developed
      "under the brand" is available in a `Subversion repository
-     <http://svn.repoze.org>`_.  Pyramid was originally known as
+     <https://web.archive.org/web/20190103024221/http://svn.repoze.org/>`_.  Pyramid was originally known as
      :mod:`repoze.bfg`.
 
-   setuptools
-     `Setuptools <http://peak.telecommunity.com/DevCenter/setuptools>`_
+   Setuptools
+     `Setuptools <https://setuptools.readthedocs.io/en/latest/>`_
      builds on Python's ``distutils`` to provide easier building,
-     distribution, and installation of libraries and applications.  As of
-     this writing, setuptools runs under Python 2, but not under Python 3.
-     You can use :term:`distribute` under Python 3 instead.
-
-   distribute
-     `Distribute <https://pythonhosted.org/distribute/>`_ is a fork of
-     :term:`setuptools` which runs on both Python 2 and Python 3.
+     distribution, and installation of libraries and applications.
 
    pkg_resources
-     A module which ships with :term:`setuptools` and :term:`distribute` that
+     A module which ships with :term:`Setuptools` that
      provides an API for addressing "asset files" within a Python
      :term:`package`.  Asset files are static files, template files, etc;
      basically anything non-Python-source that lives in a Python package can
@@ -63,8 +57,7 @@ Glossary
      
      .. seealso::
          
-         See also `PkgResources
-         <http://peak.telecommunity.com/DevCenter/PkgResources>`_.
+         See also `Package Discovery and Resource Access using pkg_resources <https://setuptools.readthedocs.io/en/latest/pkg_resources.html>`_.
 
    asset
      Any file contained within a Python :term:`package` which is *not*
@@ -90,28 +83,24 @@ Glossary
      :term:`package`.
 
    project
-     (Setuptools/distutils terminology). A directory on disk which
-     contains a ``setup.py`` file and one or more Python packages.  The
-     ``setup.py`` file contains code that allows the package(s) to be
-     installed, distributed, and tested.
+     Setuptools / Python packaging terminology.
+     A directory on disk which contains a ``setup.py`` and / or ``pyproject.toml`` file and one or more Python packages.
+     The project files contain metadata that allow the package(s) to be installed, distributed, and tested.
 
    distribution
-     (Setuptools/distutils terminology).  A file representing an
+     Setuptools / Python packaging terminology.  A file representing an
      installable library or application.  Distributions are usually
-     files that have the suffix of ``.egg``, ``.tar.gz``, or ``.zip``.
-     Distributions are the target of Setuptools-related commands such as
-     ``easy_install``.
+     archives that have the suffix of ``.whl``, ``.tar.gz``, or ``.zip``.
+     Distributions are the target of packaging-related commands such as ``pip install``.
 
    entry point
-     A :term:`setuptools` indirection, defined within a setuptools
-     :term:`distribution` setup.py.  It is usually a name which refers
-     to a function somewhere in a package which is held by the
-     distribution.
+     A :term:`Setuptools` indirection, defined within a Setuptools :term:`distribution` (usually in ``setup.py`` or ``setup.cfg``).
+     It is usually a name which refers to a function somewhere in a package which is held by the distribution.
 
    dotted Python name
      A reference to a Python object by name using a string, in the form
      ``path.to.modulename:attributename``.  Often used in Pyramid and
-     setuptools configurations.  A variant is used in dotted names within
+     Setuptools configurations.  A variant is used in dotted names within
      configurator method arguments that name objects (such as the "add_view"
      method's "view" and "context" attributes): the colon (``:``) is not
      used; in its place is a dot.
@@ -167,7 +156,7 @@ Glossary
      An object representing a node in the :term:`resource tree` of an
      application.  If :term:`traversal` is used, a resource is an element in
      the resource tree traversed by the system.  When traversal is used, a
-     resource becomes the :term:`context` of a :term:`view`.  If :term:`url
+     resource becomes the :term:`context` of a :term:`view`.  If :term:`URL
      dispatch` is used, a single resource is generated for each request and
      is used as the context resource of a view.
 
@@ -234,7 +223,7 @@ Glossary
      object *location-aware*.
 
    permission
-     A string or Unicode object that represents an action being taken against
+     A string that represents an action being taken against
      a :term:`context` resource.  A permission is associated with a view name
      and a resource type by the developer.  Resources are decorated with
      security declarations (e.g. an :term:`ACL`), which reference these
@@ -291,7 +280,7 @@ Glossary
      :term:`authorization policy`.
 
    principal
-     A *principal* is a string or Unicode object representing an entity,
+     A *principal* is a string representing an entity,
      typically a user or group. Principals are provided by an
      :term:`authentication policy`. For example, if a user has the
      :term:`userid` `bob`, and is a member of two groups named `group foo` and
@@ -300,13 +289,20 @@ Glossary
      foo` and `group bar`.
 
    userid
-     A *userid* is a string or Unicode object used to identify and authenticate
-     a real-world user or client. A userid is supplied to an
-     :term:`authentication policy` in order to discover the user's
-     :term:`principals <principal>`. In the authentication policies which
-     :app:`Pyramid` provides, the default behavior returns the user's userid as
-     a principal, but this is not strictly necessary in custom policies that
-     define their principals differently.
+     A *userid* is the string representation of an :term:`identity`.  Just like
+     the identity, it should identify the user associated with the current
+     request.  Oftentimes this is the ID of the user object in a database.
+
+   identity
+      An identity is an object identifying the user associated with the current request.
+      The object can be of any shape, such as a simple ID string or an ORM object.
+
+   security policy
+     A security policy in :app:`Pyramid` terms is an object implementing the
+     :class:`pyramid.interfaces.ISecurityPolicy` API which identifies the user
+     associated with the current request
+     (perhaps via a cookie or ``Authorization`` header) and determines whether
+     or not that user is permitted to access the requested resource.
 
    authorization policy
      An authorization policy in :app:`Pyramid` terms is a bit of
@@ -315,13 +311,21 @@ Glossary
      associated with a permission, based on the information found on the
      :term:`context` resource.
 
+     .. deprecated:: 2.0
+       Authorization policies have been deprecated in favor of a
+       :term:`security policy`.
+
    authentication policy
      An authentication policy in :app:`Pyramid` terms is a bit of
      code which has an API which determines the current
      :term:`principal` (or principals) associated with a request.
 
+     .. deprecated:: 2.0
+       Authentication policies have been deprecated in favor of a
+       :term:`security policy`.
+
    WSGI
-     `Web Server Gateway Interface <http://wsgi.readthedocs.org/en/latest/>`_.
+     `Web Server Gateway Interface <https://wsgi.readthedocs.io/en/latest/>`_.
      This is a Python standard for connecting web applications to web servers,
      similar to the concept of Java Servlets.  :app:`Pyramid` requires that
      your application be served as a WSGI application.
@@ -330,26 +334,26 @@ Glossary
      *Middleware* is a :term:`WSGI` concept.  It is a WSGI component
      that acts both as a server and an application.  Interesting uses
      for middleware exist, such as caching, content-transport
-     encoding, and other functions.  See `WSGI.org
-     <http://wsgi.readthedocs.org/en/latest/>`_ or `PyPI
-     <https://pypi.python.org/pypi>`_ to find middleware for your application.
+     encoding, and other functions.  See `WSGI documentation
+     <https://wsgi.readthedocs.io/en/latest/>`_ or `PyPI
+     <https://pypi.org/>`_ to find middleware for your application.
 
    pipeline
      The :term:`PasteDeploy` term for a single configuration of a WSGI
      server, a WSGI application, with a set of :term:`middleware` in-between.
 
    Zope
-     `The Z Object Publishing Framework <http://zope.org>`_, a
+     `The Z Object Publishing Framework <https://www.zope.org/>`_, a
      full-featured Python web framework.
 
    Grok
-     `A web framework based on Zope 3 <http://grok.zope.org>`_.
+     `A web framework based on Zope 3 <https://web.archive.org/web/20180615015013/http://grok.zope.org>`_.
 
    Django
      `A full-featured Python web framework <https://www.djangoproject.com/>`_.
 
    Pylons
-     `A lightweight Python web framework <http://docs.pylonsproject.org/projects/pylons-webframework/en/latest/>`_
+     `A lightweight Python web framework <https://docs.pylonsproject.org/projects/pylons-webframework/en/latest/>`_
      and a predecessor of Pyramid.
 
    ZODB
@@ -357,17 +361,25 @@ Glossary
       Python object store.
 
    WebOb
-     `WebOb <http://webob.org>`_ is a WSGI request/response
+     `WebOb <https://webob.org>`_ is a WSGI request/response
      library created by Ian Bicking.
 
    PasteDeploy
-     `PasteDeploy <http://pythonpaste.org/deploy/>`_ is a library used by
+     `PasteDeploy <https://docs.pylonsproject.org/projects/pastedeploy/en/latest/>`_ is a library used by
      :app:`Pyramid` which makes it possible to configure
      :term:`WSGI` components together declaratively within an ``.ini``
      file.  It was developed by Ian Bicking.
 
+   plaster
+     `plaster <https://docs.pylonsproject.org/projects/plaster/en/latest/>`_ is
+     a library used by :app:`Pyramid` which acts as an abstraction between
+     command-line scripts and the file format used to load the :term:`WSGI`
+     components and application settings. By default :app:`Pyramid` ships
+     with the ``plaster_pastedeploy`` library installed which provides
+     integrated support for loading a :term:`PasteDeploy` INI file.
+
    Chameleon
-     `chameleon <https://chameleon.readthedocs.org/en/latest/>`_ is an
+     `chameleon <https://chameleon.readthedocs.io/en/latest/>`_ is an
      attribute language template compiler which supports the :term:`ZPT`
      templating specification. It is written and maintained by Malthe Borch. It
      has several extensions, such as the ability to use bracketed (Mako-style)
@@ -376,36 +388,36 @@ Glossary
      the box in ZPT and text flavors.
 
    ZPT
-     The `Zope Page Template <http://docs.zope.org/zope2/zope2book/ZPT.html>`_
+     The `Zope Page Template <https://zope.readthedocs.io/en/latest/zopebook/ZPT.html>`_
      templating language.
 
    METAL
      `Macro Expansion for TAL
-     <http://docs.zope.org/zope2/zope2book/AppendixC.html#metal-overview>`_, a
+     <https://zope.readthedocs.io/en/latest/zopebook/AppendixC.html#metal-overview>`_, a
      part of :term:`ZPT` which makes it possible to share common look and feel
      between templates.
 
    Genshi
-     An `XML templating language <https://pypi.python.org/pypi/Genshi/>`_
+     An `XML templating language <https://pypi.org/project/Genshi/>`_
      by Christopher Lenz.
 
    Jinja2
-     A `text templating language <http://jinja.pocoo.org/>`_ by Armin Ronacher.
+     A `text templating language <https://palletsprojects.com/p/jinja/>`_ by Armin Ronacher.
 
    Routes
-     A `system by Ben Bangert <http://routes.readthedocs.org/en/latest/>`_
+     A `system by Ben Bangert <https://routes.readthedocs.io/en/latest/>`_
      which parses URLs and compares them against a number of user defined
      mappings. The URL pattern matching syntax in :app:`Pyramid` is inspired by
      the Routes syntax (which was inspired by Ruby On Rails pattern syntax).
 
    route
-     A single pattern matched by the :term:`url dispatch` subsystem,
+     A single pattern matched by the :term:`URL dispatch` subsystem,
      which generally resolves to a :term:`root factory` (and then
      ultimately a :term:`view`).
 
      .. seealso::
 
-        See also :term:`url dispatch`.
+        See also :term:`URL dispatch`.
 
    route configuration
      Route configuration is the act of associating request parameters with a
@@ -422,7 +434,7 @@ Glossary
      dispatching and other application configuration tasks.
 
    reStructuredText
-     A `plain text markup format <http://docutils.sourceforge.net/rst.html>`_
+     A `plain text markup format <https://docutils.sourceforge.io/rst.html>`_
      that is the defacto standard for documenting Python projects.
      The Pyramid documentation is written in reStructuredText.
 
@@ -441,7 +453,7 @@ Glossary
      subpath.  See :ref:`star_subpath` for more information.
 
    interface
-     A `Zope interface <https://pypi.python.org/pypi/zope.interface>`_
+     A `Zope interface <https://pypi.org/project/zope.interface/>`_
      object.  In :app:`Pyramid`, an interface may be attached to a
      :term:`resource` object or a :term:`request` object in order to
      identify that the object is "of a type".  Interfaces are used
@@ -482,23 +494,23 @@ Glossary
 
    repoze.lemonade
      Zope2 CMF-like `data structures and helper facilities
-     <http://docs.repoze.org/lemonade>`_ for CA-and-ZODB-based
+     <https://web.archive.org/web/20180903140246/http://docs.repoze.org/lemonade/>`_ for CA-and-ZODB-based
      applications useful within :app:`Pyramid` applications.
 
    repoze.catalog
      An indexing and search facility (fielded and full-text) based on
-     `zope.index <https://pypi.python.org/pypi/zope.index>`_.  See `the
-     documentation <http://docs.repoze.org/catalog>`_ for more
+     `zope.index <https://pypi.org/project/zope.index/>`_.  See `the
+     documentation <https://web.archive.org/web/20181214215757/http://docs.repoze.org/catalog/>`_ for more
      information.
 
    repoze.who
-     `Authentication middleware <http://repozewho.readthedocs.org/en/latest/>`_
+     `Authentication middleware <https://repozewho.readthedocs.io/en/latest/>`_
      for :term:`WSGI` applications.  It can be used by :app:`Pyramid` to
      provide authentication information.
 
    repoze.workflow
      `Barebones workflow for Python apps
-     <http://docs.repoze.org/workflow>`_ .  It can be used by
+     <https://web.archive.org/web/20181117003329/http://docs.repoze.org/workflow/>`_ .  It can be used by
      :app:`Pyramid` to form a workflow system.
 
    virtual root
@@ -517,8 +529,8 @@ Glossary
      from the :term:`physical root`.  For example, the physical path of the
      ``abc`` subobject of the physical root object is ``/abc``.  Physical paths
      can also be specified as tuples where the first element is the empty
-     string (representing the root), and every other element is a Unicode
-     object, e.g. ``('', 'abc')``.  Physical paths are also sometimes called
+     string (representing the root), and every other element is a Unicode string,
+     e.g. ``('', 'abc')``.  Physical paths are also sometimes called
      "traversal paths".
 
    lineage
@@ -546,7 +558,7 @@ Glossary
      mappings, and does not (knowingly) use traversal otherwise.
 
    SQLAlchemy
-     `SQLAlchemy <http://www.sqlalchemy.org/>`_ is an object
+     `SQLAlchemy <https://www.sqlalchemy.org/>`_ is an object
      relational mapper used in tutorials within this documentation.
 
    JSON
@@ -568,7 +580,7 @@ Glossary
      :ref:`adding_and_overriding_renderers` for more information.
 
    mod_wsgi
-     `mod_wsgi <https://code.google.com/archive/p/modwsgi>`_ is an Apache
+     `mod_wsgi <https://modwsgi.readthedocs.io/en/develop/>`_ is an Apache
      module developed by Graham Dumpleton.  It allows :term:`WSGI` applications
      (such as applications developed using :app:`Pyramid`) to be served using
      the Apache web server.
@@ -699,7 +711,7 @@ Glossary
      :ref:`multidict_narr` and :class:`pyramid.interfaces.IMultiDict`.
 
    PyPI
-     `The Python Package Index <https://pypi.python.org/pypi>`_, a collection
+     `The Python Package Index <https://pypi.org/>`_, a collection
      of software available for Python.
 
    Agendaless Consulting
@@ -711,7 +723,7 @@ Glossary
          See also `Agendaless Consulting <https://agendaless.com>`_.
 
    Jython
-     A `Python implementation <http://www.jython.org/>`_ written for
+     A `Python implementation <https://www.jython.org/>`_ written for
      the Java Virtual Machine.
 
    Python
@@ -743,13 +755,13 @@ Glossary
      :ref:`Venusian` is a library which
      allows framework authors to defer decorator actions.  Instead of
      taking actions when a function (or class) decorator is executed
-     at import time, the action usually taken by the decorator is
+     at :term:`import time`, the action usually taken by the decorator is
      deferred until a separate "scan" phase.  :app:`Pyramid` relies
      on Venusian to provide a basis for its :term:`scan` feature.
 
    Translation String
      An instance of :class:`pyramid.i18n.TranslationString`, which
-     is a class that behaves like a Unicode string, but has several
+     is a class that behaves like a string, but has several
      extra attributes such as ``domain``, ``msgid``, and ``mapping``
      for use during translation.  Translation strings are usually
      created by hand within software, but are sometimes created on the
@@ -773,7 +785,7 @@ Glossary
 
    Translator
      A callable which receives a :term:`translation string` and returns a
-     translated Unicode object for the purposes of internationalization.  A
+     translated string for the purposes of internationalization.  A
      :term:`localizer` supplies a translator to a :app:`Pyramid` application
      accessible via its :class:`~pyramid.i18n.Localizer.translate` method.
 
@@ -845,7 +857,7 @@ Glossary
    Localization
      The process of displaying the user interface of an
      internationalized application in a particular language or
-     cultural context.  Often shortened to "l10" (because the word
+     cultural context.  Often shortened to "l10n" (because the word
      "localization" is L, 10 letters, then N).
 
      .. seealso::
@@ -891,8 +903,13 @@ Glossary
       :meth:`pyramid.config.Configurator.set_session_factory` for more
       information.
 
+   CSRF storage policy
+      A utility that implements :class:`pyramid.interfaces.ICSRFStoragePolicy`
+      which is responsible for allocating CSRF tokens to a user and verifying
+      that a provided token is acceptable.
+
    Mako
-     `Mako <http://www.makotemplates.org/>`_ is a template language
+     `Mako <https://www.makotemplates.org/>`_ is a template language
      which refines the familiar ideas of componentized layout and inheritance
      using Python with Python scoping and calling semantics.
 
@@ -901,7 +918,7 @@ Glossary
      :meth:`pyramid.config.Configurator.add_route` and
      :meth:`pyramid.config.Configurator.add_view` to make it more convenient
      to register a collection of views as a single class when using
-     :term:`url dispatch`.  View handlers ship as part of the
+     :term:`URL dispatch`.  View handlers ship as part of the
      :term:`pyramid_handlers` add-on package.
 
    Deployment settings
@@ -912,8 +929,7 @@ Glossary
      can be used as global application values.
 
    WebTest
-     `WebTest <http://webtest.pythonpaste.org/en/latest/>`_ is a package which can help
-     you write functional tests for your WSGI application.
+     `WebTest <https://docs.pylonsproject.org/projects/webtest/en/latest/>`_ is a package which can help you write functional tests for your WSGI application.
 
    view mapper
     A view mapper is a class which implements the
@@ -941,16 +957,16 @@ Glossary
    pyramid_handlers
      An add-on package which allows :app:`Pyramid` users to create classes
      that are analogues of Pylons 1 "controllers".  See
-     http://docs.pylonsproject.org/projects/pyramid_handlers/en/latest/.
+     https://docs.pylonsproject.org/projects/pyramid_handlers/en/latest/.
 
    pyramid_jinja2
      :term:`Jinja2` templating system bindings for Pyramid, documented at
-     http://docs.pylonsproject.org/projects/pyramid_jinja2/en/latest/.  This
+     https://docs.pylonsproject.org/projects/pyramid_jinja2/en/latest/.  This
      package also includes a scaffold named ``pyramid_jinja2_starter``, which
      creates an application package based on the Jinja2 templating system.
 
    Akhet
-     `Akhet <http://docs.pylonsproject.org/projects/akhet/en/latest/>`_ is a 
+     `Akhet <https://docs.pylonsproject.org/projects/akhet/en/latest/>`_ is a
      Pyramid library and demo application with a Pylons-like feel.
      It's most known for its former application scaffold, which helped 
      users transition from Pylons and those preferring a more Pylons-like API.
@@ -964,7 +980,7 @@ Glossary
    distutils
      The standard system for packaging and distributing Python packages.  See
      https://docs.python.org/2/distutils/index.html for more information.
-     :term:`setuptools` is actually an *extension* of the Distutils.
+     :term:`Setuptools` is actually an *extension* of the Distutils.
 
    exception response
      A :term:`response` that is generated as the result of a raised exception
@@ -992,24 +1008,19 @@ Glossary
      pages rendered by your application, displaying request, routing, and
      database information.  :mod:`pyramid_debugtoolbar` is configured into
      the ``development.ini`` of all applications which use a Pyramid
-     :term:`scaffold`.  For more information, see
-     http://docs.pylonsproject.org/projects/pyramid_debugtoolbar/en/latest/.
-
-   scaffold
-     A project template that generates some of the major parts of a Pyramid
-     application and helps users to quickly get started writing larger
-     applications.  Scaffolds are usually used via the ``pcreate`` command.
+     :term:`cookiecutter`.  For more information, see
+     https://docs.pylonsproject.org/projects/pyramid_debugtoolbar/en/latest/.
 
    pyramid_exclog
      A package which logs Pyramid application exception (error) information
      to a standard Python logger.  This add-on is most useful when
      used in production applications, because the logger can be configured to
-     log to a file, to UNIX syslog, to the Windows Event Log, or even to
+     log to a file, to Unix syslog, to the Windows Event Log, or even to
      email. See its `documentation
-     <http://docs.pylonsproject.org/projects/pyramid_exclog/en/latest/>`_.
+     <https://docs.pylonsproject.org/projects/pyramid_exclog/en/latest/>`_.
 
    console script
-     A script written to the ``bin`` (on UNIX, or ``Scripts`` on Windows)
+     A script written to the ``bin`` (on Unix, or ``Scripts`` on Windows)
      directory of a Python installation or :term:`virtual environment` as the
      result of running ``pip install`` or ``pip install -e .``.
 
@@ -1058,21 +1069,21 @@ Glossary
       :class:`pyramid.interfaces.IAssetDescriptor`.
 
    Waitress
-      A :term:`WSGI` server that runs on UNIX and Windows under Python 2.6+
-      and Python 3.2+.  Projects generated via Pyramid scaffolding use
+      A :term:`WSGI` server that runs on Unix and Windows under Python 2.7+
+      and Python 3.3+.  Projects generated via Pyramid cookiecutters use
       Waitress as a WGSI server.  See
-      http://docs.pylonsproject.org/projects/waitress/en/latest/ for detailed
+      https://docs.pylonsproject.org/projects/waitress/en/latest/ for detailed
       information.
 
-   Green Unicorn
-      Aka ``gunicorn``, a fast :term:`WSGI` server that runs on UNIX under
-      Python 2.6+ or Python 3.1+.  See http://gunicorn.org/ for detailed 
+   gunicorn
+      Aka ``gunicorn``, a fast :term:`WSGI` server that runs on Unix under
+      Python 2.6+ or Python 3.4+.  See https://gunicorn.org/ for detailed
       information.
 
    predicate factory
       A callable which is used by a third party during the registration of a
       route, view, or subscriber predicates to extend the configuration
-      system.  See :ref:`registering_thirdparty_predicates` for more
+      system.  See :ref:`registering_custom_predicates` for more
       information.
 
    add-on
@@ -1083,7 +1094,7 @@ Glossary
    pyramid_redis_sessions
       A package by Eric Rasmussen which allows you to store Pyramid session 
       data in a Redis database.  See 
-      https://pypi.python.org/pypi/pyramid_redis_sessions for more information.
+      https://pypi.org/project/pyramid_redis_sessions/ for more information.
 
    cache busting
       A technique used when serving a cacheable static asset in order to force
@@ -1109,15 +1120,6 @@ Glossary
       The :term:`Python Packaging Authority`'s recommended tool for installing
       Python packages.
 
-   pyvenv
-      The :term:`Python Packaging Authority` formerly recommended using the
-      ``pyvenv`` command for `creating virtual environments on Python 3.4 and
-      3.5
-      <https://packaging.python.org/en/latest/installing/#creating-virtual-environments>`_,
-      but it was deprecated in 3.6 in favor of ``python3 -m venv`` on UNIX or
-      ``python -m venv`` on Windows, which is backward compatible on Python
-      3.3 and greater.
-
    virtual environment
       An isolated Python environment that allows packages to be installed for
       use by a particular application, rather than being installed system wide.
@@ -1134,3 +1136,90 @@ Glossary
       The `Python Packaging Authority (PyPA) <https://www.pypa.io/en/latest/>`_
       is a working group that maintains many of the relevant projects in Python
       packaging.
+
+   cookiecutter
+      A command-line utility that creates projects from `cookiecutters <https://cookiecutter.readthedocs.io/en/latest/>`__ (project templates), e.g., creating a Python package project from a Python package project template.
+
+      .. versionadded:: 1.8
+          Added cookiecutter support.
+
+      .. versionchanged:: 1.10
+          Merged features from ``pyramid-cookiecutter-alchemy`` and ``pyramid-cookiecutter-zodb`` into the single cookiecutter to rule them all, ``pyramid-cookiecutter-starter``.
+
+      .. deprecated:: 1.10
+          ``pyramid-cookiecutter-alchemy`` and ``pyramid-cookiecutter-zodb`` are no longer supported.
+          Use ``pyramid-cookiecutter-starter`` going forward.
+
+   coverage
+      A measurement of code coverage, usually expressed as a percentage of which lines of code have been executed over which lines are executable, typically run during test execution.
+
+   execution policy
+      A policy which wraps the :term:`router` by creating the request object
+      and sending it through the request pipeline.
+      See :class:`pyramid.config.Configurator.set_execution_policy`.
+
+   singleton
+      A singleton is a class which will only ever have one instance.
+      As there is only one, it is shared by all other code.
+      This makes it an example of :term:`global state`.
+
+      Using a singleton is `considered a poor design choice. <https://softwareengineering.stackexchange.com/questions/148108/why-is-global-state-so-evil>`_
+      As :term:`mutable` global state, it can be changed by any other code,
+      and so the values it represents cannot be reasoned about or tested properly.
+
+   global state
+      A set of values that are available to the entirety of a program.
+
+   mutable
+      In Python, a value is mutable if it can be changed *in place*.
+      The Python ``list`` and ``dict`` types are mutable.
+      When a value is added to or removed from an instance of either, the original object remains.
+      The opposite of mutable is :term:`immutable`.
+
+   immutable
+      In Python, a value is immutable if it cannot be changed.
+      The Python ``str``, ``int``, and ``tuple`` data types are all ``immutable``.
+
+   import time
+      In Python, the moment when a module is referred to in an ``import`` statement.
+      At this moment, all statements in that module at the module scope (at the left margin) are executed.
+      It is a bad design decision to put statements in a Python module that have :term:`side effect`\ s at import time.
+
+   side effect
+      A statement or function has a side effect when it changes a value outside its own scope.
+      Put another way, if one can observe the change made by a function from outside that function, it has a side effect.
+
+   context manager
+      A context manager is an object that defines the runtime context to be established when executing a :ref:`with <python:with>` statement in Python. The context manager handles the entry into, and the exit from, the desired runtime context for the execution of the block of code. Context managers are normally invoked using the ``with`` statement, but can also be used by directly invoking their methods. Pyramid adds context managers for :class:`pyramid.config.Configurator`, :meth:`pyramid.interfaces.IRouter.request_context`, :func:`pyramid.paster.bootstrap`, :func:`pyramid.scripting.prepare`, and :func:`pyramid.testing.testConfig`. See also the Python documentation for :ref:`With Statement Context Managers <python:context-managers>` and :pep:`343`.
+
+   Alembic
+      `Alembic <https://alembic.sqlalchemy.org/en/latest/>`_ is a lightweight database migration tool for usage with the SQLAlchemy Database Toolkit for Python.
+
+   media type
+       A label representing the type of some content.
+       A media type is a nested structure containing a top-level type and a subtype.
+       Optionally, a media type can also contain parameters specific to the type.
+       See :rfc:`6838` for more information about media types.
+
+   route prefix
+      A route prefix is a path prefix that is prepended to any routes that are configured while it is active.
+      A route prefix can be set via :meth:`pyramid.config.Configurator.include` or :meth:`pyramid.config.Configurator.route_prefix_context`.
+
+   commit
+      An operation applied to a :term:`configurator`.
+      A commit checks for conflicts in :term:`configuration declaration`\s, and if none are found applies all pending :term:`action`\s.
+      It is possible, although not necessarily recommended, to invoke :term:`commit`\s using :meth:`pyramid.config.Configurator.commit` to :ref:`manually resolve <manually_resolving_conflicts>` configuration conflicts.
+
+   settings
+      Settings control the runtime behavior of a Pyramid application.
+      They are the aggregation of configuration file declarations, process environment values, other additions generated by Pyramid or its add-ons and :term:`tween`\s, and values produced by your own code.
+      Settings are collected at application startup.
+      They can affect all the components which make up the the application.
+      Pyramid itself, any tweens or Pyramid add-ons used, and :ref:`your own code may reference <deployment_settings>` and act on settings.
+
+   constructor
+      A function returning a Pyramid :term:`WSGI` application.
+      Every Pyramid application has a single constructor function named ``main``.
+      It returns a Pyramid :term:`router` generated by a :term:`configurator`, and is written by you.
+      The Pyramid constructor is the application's :term:`entry point`.
+

@@ -18,7 +18,7 @@ First print publishing: February, 2011
 All rights reserved.  This material may be copied or distributed only
 subject to the terms and conditions set forth in the `Creative Commons
 Attribution-Noncommercial-Share Alike 3.0 United States License
-<http://creativecommons.org/licenses/by-nc-sa/3.0/us/>`_.  You must
+<https://creativecommons.org/licenses/by-nc-sa/3.0/us/>`_.  You must
 give the original author credit.  You may not use this work for
 commercial purposes.  If you alter, transform, or build upon this
 work, you may distribute the resulting work only under the same or
@@ -30,7 +30,7 @@ similar license to this one.
    Creative Commons Attribution-Nonconmmercial-Share Alike 3.0 United
    States License, the :app:`Pyramid` *software* is offered under a
    `less restrictive (BSD-like) license
-   <http://repoze.org/license.html>`_ .
+   <https://web.archive.org/web/20190401024809/http://repoze.org/license.html>`_ .
 
 All terms mentioned in this book that are known to be trademarks or
 service marks have been appropriately capitalized.  However, use of a
@@ -80,8 +80,8 @@ Print Production
 ----------------
 
 The print version of this book was produced using the `Sphinx
-<http://www.sphinx-doc.org/en/stable/>`_ documentation generation system and
-the `LaTeX <http://www.latex-project.org/>`_ typesetting system.
+<https://www.sphinx-doc.org/en/master/>`_ documentation generation system and
+the `LaTeX <https://www.latex-project.org/>`_ typesetting system.
 
 Contacting The Publisher
 ------------------------
@@ -96,7 +96,7 @@ HTML Version and Source Code
 ----------------------------
 
 An HTML version of this book is freely available via
-http://docs.pylonsproject.org/projects/pyramid/en/latest/
+https://docs.pylonsproject.org/projects/pyramid/en/latest/
 
 The source code for the examples used in this book are available
 within the :app:`Pyramid` software distribution, always available

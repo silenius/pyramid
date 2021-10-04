@@ -50,7 +50,7 @@ The suggested mechanism for unit and integration testing of a :app:`Pyramid`
 application is the Python :mod:`unittest` module.  Although this module is
 named :mod:`unittest`, it is actually capable of driving both unit and
 integration tests.  A good :mod:`unittest` tutorial is available within `Dive
-Into Python <http://www.diveintopython.net/unit_testing/index.html>`_ by Mark
+Into Python 3 <https://diveinto.org/python3/unit-testing.html>`_ by Mark
 Pilgrim.
 
 :app:`Pyramid` provides a number of facilities that make unit, integration, and
@@ -102,17 +102,17 @@ isolated request for the duration of a single test.  Here's an example of using
 this feature:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   import unittest
-   from pyramid import testing
+    import unittest
+    from pyramid import testing
 
-   class MyTest(unittest.TestCase):
-       def setUp(self):
-           self.config = testing.setUp()
+    class MyTest(unittest.TestCase):
+        def setUp(self):
+            self.config = testing.setUp()
 
-       def tearDown(self):
-           testing.tearDown()
+        def tearDown(self):
+            testing.tearDown()
 
 The above will make sure that :func:`~pyramid.threadlocal.get_current_registry`
 called within a test case method of ``MyTest`` will return the
@@ -131,18 +131,18 @@ can pass a :term:`request` object into the :func:`pyramid.testing.setUp` within
 the ``setUp`` method of your test:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   import unittest
-   from pyramid import testing
+    import unittest
+    from pyramid import testing
 
-   class MyTest(unittest.TestCase):
-       def setUp(self):
-           request = testing.DummyRequest()
-           self.config = testing.setUp(request=request)
+    class MyTest(unittest.TestCase):
+        def setUp(self):
+            request = testing.DummyRequest()
+            self.config = testing.setUp(request=request)
 
-       def tearDown(self):
-           testing.tearDown()
+        def tearDown(self):
+            testing.tearDown()
 
 If you pass a :term:`request` object into :func:`pyramid.testing.setUp` within
 your test case's ``setUp``, any test method attached to the ``MyTest`` test
@@ -158,24 +158,24 @@ Test setup using a context manager
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 An alternative style of setting up a test configuration is to use the ``with``
-statement and :func:`pyramid.testing.testConfig` to create a context manager.
+statement and :func:`pyramid.testing.testConfig` to create a :term:`context manager`.
 The context manager will call :func:`pyramid.testing.setUp` before the code
 under test and :func:`pyramid.testing.tearDown` afterwards.
 
 This style is useful for small self-contained tests. For example:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   import unittest
+    import unittest
 
-   class MyTest(unittest.TestCase):
+    class MyTest(unittest.TestCase):
 
-       def test_my_function(self):
-           from pyramid import testing
-           with testing.testConfig() as config:
-               config.add_route('bar', '/bar/{id}')
-               my_function_which_needs_route_bar()
+        def test_my_function(self):
+            from pyramid import testing
+            with testing.testConfig() as config:
+                config.add_route('bar', '/bar/{id}')
+                my_function_which_needs_route_bar()
 
 What?
 ~~~~~
@@ -208,14 +208,14 @@ For example, let's imagine you want to unit test a :app:`Pyramid` view
 function.
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   from pyramid.httpexceptions import HTTPForbidden
+    from pyramid.httpexceptions import HTTPForbidden
 
-   def view_fn(request):
-       if request.has_permission('edit'):
-           raise HTTPForbidden
-       return {'greeting':'hello'}
+    def view_fn(request):
+        if request.has_permission('edit'):
+            raise HTTPForbidden
+        return {'greeting':'hello'}
 
 .. note::
 
@@ -243,42 +243,42 @@ without needing to invoke the actual application configuration implied by its
 :class:`unittest.TestCase` that used the testing API.
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   import unittest
-   from pyramid import testing
+    import unittest
+    from pyramid import testing
 
-   class MyTest(unittest.TestCase):
-       def setUp(self):
-           self.config = testing.setUp()
+    class MyTest(unittest.TestCase):
+        def setUp(self):
+            self.config = testing.setUp()
 
-       def tearDown(self):
-           testing.tearDown()
-       
-       def test_view_fn_forbidden(self):
-           from pyramid.httpexceptions import HTTPForbidden
-           from my.package import view_fn
-           self.config.testing_securitypolicy(userid='hank', 
-                                              permissive=False)
-           request = testing.DummyRequest()
-           request.context = testing.DummyResource()
-           self.assertRaises(HTTPForbidden, view_fn, request)
+        def tearDown(self):
+            testing.tearDown()
 
-       def test_view_fn_allowed(self):
-           from my.package import view_fn
-           self.config.testing_securitypolicy(userid='hank', 
-                                              permissive=True)
-           request = testing.DummyRequest()
-           request.context = testing.DummyResource()
-           response = view_fn(request)
-           self.assertEqual(response, {'greeting':'hello'})
+        def test_view_fn_forbidden(self):
+            from pyramid.httpexceptions import HTTPForbidden
+            from my.package import view_fn
+            self.config.testing_securitypolicy(userid='hank',
+                                               permissive=False)
+            request = testing.DummyRequest()
+            request.context = testing.DummyResource()
+            self.assertRaises(HTTPForbidden, view_fn, request)
+
+        def test_view_fn_allowed(self):
+            from my.package import view_fn
+            self.config.testing_securitypolicy(userid='hank',
+                                               permissive=True)
+            request = testing.DummyRequest()
+            request.context = testing.DummyResource()
+            response = view_fn(request)
+            self.assertEqual(response, {'greeting':'hello'})
            
 In the above example, we create a ``MyTest`` test case that inherits from
 :class:`unittest.TestCase`.  If it's in our :app:`Pyramid` application, it will
-be found when ``py.test`` is run.  It has two test methods.
+be found when ``pytest`` is run.  It has two test methods.
 
 The first test method, ``test_view_fn_forbidden`` tests the ``view_fn`` when
-the authentication policy forbids the current user the ``edit`` permission. Its
+the security policy forbids the current user the ``edit`` permission. Its
 third line registers a "dummy" "non-permissive" authorization policy using the
 :meth:`~pyramid.config.Configurator.testing_securitypolicy` method, which is a
 special helper method for unit testing.
@@ -288,13 +288,13 @@ WebOb request object API.  A :class:`pyramid.testing.DummyRequest` is a request
 object that requires less setup than a "real" :app:`Pyramid` request.  We call
 the function being tested with the manufactured request.  When the function is
 called, :meth:`pyramid.request.Request.has_permission` will call the "dummy"
-authentication policy we've registered through
+security policy we've registered through
 :meth:`~pyramid.config.Configurator.testing_securitypolicy`, which denies
 access.  We check that the view function raises a
 :exc:`~pyramid.httpexceptions.HTTPForbidden` error.
 
 The second test method, named ``test_view_fn_allowed``, tests the alternate
-case, where the authentication policy allows access.  Notice that we pass
+case, where the security policy allows access.  Notice that we pass
 different values to :meth:`~pyramid.config.Configurator.testing_securitypolicy`
 to obtain this result.  We assert at the end of this that the view function
 returns a value.
@@ -365,29 +365,27 @@ Functional tests test your literal application.
 
 In Pyramid, functional tests are typically written using the :term:`WebTest`
 package, which provides APIs for invoking HTTP(S) requests to your application.
-We also like ``py.test`` and ``pytest-cov`` to provide simple testing and
+We also like ``pytest`` and ``pytest-cov`` to provide simple testing and
 coverage reports.
 
 Regardless of which testing :term:`package` you use, be sure to add a
 ``tests_require`` dependency on that package to your application's ``setup.py``
-file. Using the project ``MyProject`` generated by the starter scaffold as
+file. Using the project ``myproject`` generated by the starter cookiecutter as
 described in :doc:`project`, we would insert the following code immediately
-following the ``requires`` block in the file ``MyProject/setup.py``.
+following the ``requires`` block in the file ``myproject/setup.py``.
 
-.. literalinclude:: MyProject/setup.py
+.. literalinclude:: myproject/setup.py
     :language: python
-    :linenos:
-    :lines: 11-22
-    :lineno-start: 11
-    :emphasize-lines: 8-
+    :lines: 11-23
+    :lineno-match:
+    :emphasize-lines: 9-
 
 Remember to change the dependency.
 
-.. literalinclude:: MyProject/setup.py
+.. literalinclude:: myproject/setup.py
     :language: python
-    :linenos:
-    :lines: 40-44
-    :lineno-start: 40
+    :lines: 42-46
+    :lineno-match:
     :emphasize-lines: 2-4
 
 As always, whenever you change your dependencies, make sure to run the correct
@@ -397,28 +395,36 @@ As always, whenever you change your dependencies, make sure to run the correct
 
     $VENV/bin/pip install -e ".[testing]"
 
-In your ``MyPackage`` project, your :term:`package` is named ``myproject``
-which contains a ``views`` module, which in turn contains a :term:`view`
+In your ``myproject`` project, your :term:`package` is named ``myproject``
+which contains a ``views`` package containing a ``default.py`` module, which in turn contains a :term:`view`
 function ``my_view`` that returns an HTML body when the root URL is invoked:
 
-   .. literalinclude:: MyProject/myproject/views.py
+    .. literalinclude:: myproject/myproject/views/default.py
+        :linenos:
+        :language: python
+
+Test configuration and fixtures are defined in ``conftest.py``.
+In the following example, we define a test fixture.
+
+    .. literalinclude:: myproject/tests/conftest.py
+        :pyobject: testapp
+        :linenos:
+        :language: python
+
+This fixture is used in the following example functional tests, to demonstrate invoking the above :term:`view`:
+
+   .. literalinclude:: myproject/tests/test_functional.py
       :linenos:
       :language: python
 
-The following example functional test demonstrates invoking the above
-:term:`view`:
+When these tests are run, each test method creates a "real" :term:`WSGI` application using the ``main`` function in your ``myproject.__init__`` module, using :term:`WebTest` to wrap that WSGI application.
+It assigns the result to ``res``.
 
-   .. literalinclude:: MyProject/myproject/tests.py
-      :linenos:
-      :pyobject: FunctionalTests
-      :language: python
+In the test named ``test_root``, the ``TestApp``'s ``GET`` method is used to invoke the root URL.
+An assertion is made that the returned HTML contains the text ``Pyramid``.
 
-When this test is run, each test method creates a "real" :term:`WSGI`
-application using the ``main`` function in your ``myproject.__init__`` module,
-using :term:`WebTest` to wrap that WSGI application.  It assigns the result to
-``self.testapp``.  In the test named ``test_root``, the ``TestApp``'s ``GET``
-method is used to invoke the root URL.  Finally, an assertion is made that the
-returned HTML contains the text ``Pyramid``.
+In the test named ``test_notfound``, the ``TestApp``'s ``GET`` method is used to invoke a bad URL ``/badurl``.
+An assertion is made that the returned status code in the response is ``404``.
 
 See the :term:`WebTest` documentation for further information about the methods
 available to a :class:`webtest.app.TestApp` instance.

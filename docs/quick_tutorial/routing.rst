@@ -31,7 +31,7 @@ Previously we saw the basics of routing URLs to views in Pyramid.
     explicit in ordering. Pyramid also gives facilities to avoid the problem.
     It's relatively easy to build a system that uses implicit route ordering
     with Pyramid too. See `The Groundhog series of screencasts
-    <http://static.repoze.org/casts/videotags.html>`_ if you're interested in
+    <https://web.archive.org/web/20190118040819/http://static.repoze.org/casts/videotags.html>`_ if you're interested in
     doing so.
 
 
@@ -50,44 +50,44 @@ Steps
 
    .. code-block:: bash
 
-    $ cd ..; cp -r view_classes routing; cd routing
-    $ $VENV/bin/pip install -e .
+       cd ..; cp -r view_classes routing; cd routing
+       $VENV/bin/pip install -e .
 
 #. Our ``routing/tutorial/__init__.py`` needs a route with a replacement
    pattern:
 
    .. literalinclude:: routing/tutorial/__init__.py
-    :linenos:
+       :linenos:
 
 #. We just need one view in ``routing/tutorial/views.py``:
 
    .. literalinclude:: routing/tutorial/views.py
-    :linenos:
+       :linenos:
 
 #. We just need one view in ``routing/tutorial/home.pt``:
 
    .. literalinclude:: routing/tutorial/home.pt
-    :language: html
-    :linenos:
+       :language: html
+       :linenos:
 
 #. Update ``routing/tutorial/tests.py``:
 
    .. literalinclude:: routing/tutorial/tests.py
-    :linenos:
+       :linenos:
 
 #. Now run the tests:
 
    .. code-block:: bash
 
-    $ $VENV/bin/py.test tutorial/tests.py -q
-    ..
-    2 passed in 0.39 seconds
+       $VENV/bin/pytest tutorial/tests.py -q
+       ..
+       2 passed in 0.39 seconds
 
 #. Run your Pyramid application with:
 
    .. code-block:: bash
 
-    $ $VENV/bin/pserve development.ini --reload
+       $VENV/bin/pserve development.ini --reload
 
 #. Open http://localhost:6543/howdy/amy/smith in your browser.
 
@@ -121,4 +121,4 @@ Extra credit
    result that you expected?
 
 .. seealso:: `Weird Stuff You Can Do With URL Dispatch
-   <http://www.plope.com/weird_pyramid_urldispatch>`_
+   <https://web.archive.org/web/20170131192830/http://www.plope.com/weird_pyramid_urldispatch>`_

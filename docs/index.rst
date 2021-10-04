@@ -5,16 +5,16 @@ The Pyramid Web Framework
 =========================
 
 :app:`Pyramid` is a small, fast, down-to-earth Python web framework.  It is
-developed as part of the `Pylons Project <http://www.pylonsproject.org/>`_.
-It is licensed under a `BSD-like license <http://repoze.org/license.html>`_.
+developed as part of the `Pylons Project <https://pylonsproject.org>`_.
+It is licensed under a `BSD-like license <https://web.archive.org/web/20190401024809/http://repoze.org/license.html>`_.
 
 Here is one of the simplest :app:`Pyramid` applications you can make:
 
 .. literalinclude:: narr/helloworld.py
 
 After you install :app:`Pyramid` and run this application, when you visit
-`<http://localhost:8080/hello/world>`_ in a browser, you will see the text
-``Hello, world!`` See :ref:`firstapp_chapter` for a full explanation of how
+`<http://localhost:6543/>`_ in a browser, you will see the text
+``Hello World!`` See :ref:`firstapp_chapter` for a full explanation of how
 this application works.
 
 
@@ -35,9 +35,6 @@ speed right away.
 * :doc:`quick_tour` gives an overview of the major features in Pyramid,
   covering a little about a lot.
 
-* :doc:`quick_tutorial/index` is similar to the Quick Tour, but in a tutorial
-  format, with somewhat deeper treatment of each topic and with working code.
-
 * Like learning by example? Visit the official :ref:`html_tutorials` as well as
   the community-contributed :ref:`Pyramid Tutorials
   <tutorials:pyramid-tutorials>` and :ref:`Pyramid Community Cookbook
@@ -53,13 +50,12 @@ speed right away.
 Tutorials
 =========
 
-Official tutorials explaining how to use :app:`Pyramid` to build various types
-of applications, and how to deploy :app:`Pyramid` applications to various
-platforms.
+Official tutorials provide a quick overview of :app:`Pyramid`'s features in more depth than the Quick Tour and with working code, explain how to use :app:`Pyramid` to build various types of applications, and how to deploy :app:`Pyramid` applications to various platforms.
 
 .. toctree::
    :maxdepth: 1
 
+   quick_tutorial/index
    tutorials/wiki2/index
    tutorials/wiki/index
    tutorials/modwsgi/index
@@ -70,7 +66,7 @@ platforms.
 Support and Development
 =======================
 
-The `Pyramid website <https://trypyramid.com/resources.html>`_ is the main
+The `Pyramid website <https://trypyramid.com/documentation.html>`_ is the main
 entry point to :app:`Pyramid` web framework resources for support and
 development information.
 
@@ -81,7 +77,7 @@ If you've got questions that aren't answered by this documentation, contact the
 `Pylons-discuss maillist
 <https://groups.google.com/forum/#!forum/pylons-discuss>`_ or join the
 `#pyramid IRC channel
-<https://webchat.freenode.net/?channels=pyramid>`_.
+<https://webchat.freenode.net/#pyramid>`_.
 
 Browse and check out tagged and trunk versions of :app:`Pyramid` via the
 `Pyramid GitHub repository <https://github.com/Pylons/pyramid/>`_. To check out
@@ -89,15 +85,13 @@ the trunk via ``git``, use either command:
 
 .. code-block:: text
 
-  # If you have SSH keys configured on GitHub:
-  git clone git@github.com:Pylons/pyramid.git
-  
-  # Otherwise, HTTPS will work, using your GitHub login:
-  git clone https://github.com/Pylons/pyramid.git
+    # If you have SSH keys configured on GitHub:
+    git clone git@github.com:Pylons/pyramid.git
 
-To find out how to become a contributor to :app:`Pyramid`, please see the
-`contributor's section of the documentation
-<http://docs.pylonsproject.org/en/latest/#contributing>`_.
+    # Otherwise, HTTPS will work, using your GitHub login:
+    git clone https://github.com/Pylons/pyramid.git
+
+To find out how to become a contributor to :app:`Pyramid`, please see `How to Contribute Source Code and Documentation <https://pylonsproject.org/community-how-to-contribute.html>`_.
 
 
 .. _html_narrative_documentation:
@@ -145,7 +139,7 @@ Narrative documentation in chapter form explaining how to use :app:`Pyramid`.
    narr/extending
    narr/advconfig
    narr/extconfig
-   narr/scaffolding
+   narr/cookiecutters
    narr/upgrading
    narr/threadlocals
    narr/zca
@@ -158,11 +152,9 @@ Comprehensive reference material for every public API exposed by
 :app:`Pyramid`:
 
 .. toctree::
-   :maxdepth: 1
-   :glob:
+   :maxdepth: 2
 
    api/index
-   api/*
 
 
 ``p*`` Scripts Documentation
@@ -171,11 +163,9 @@ Comprehensive reference material for every public API exposed by
 ``p*`` scripts included with :app:`Pyramid`.
 
 .. toctree::
-   :maxdepth: 1
-   :glob:
+   :maxdepth: 2
 
    pscripts/index
-   pscripts/*
 
 
 Change History
@@ -184,6 +174,10 @@ Change History
 .. toctree::
    :maxdepth: 1
 
+   whatsnew-2.0
+   whatsnew-1.10
+   whatsnew-1.9
+   whatsnew-1.8
    whatsnew-1.7
    whatsnew-1.6
    whatsnew-1.5
@@ -220,7 +214,6 @@ Typographical Conventions and Style Guide
    :maxdepth: 1
 
    typographical-conventions
-   style-guide
 
 
 Index and Glossary

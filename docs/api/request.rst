@@ -14,7 +14,7 @@
                      model_url, resource_url, resource_path, set_property, 
                      effective_principals, authenticated_userid,
                      unauthenticated_userid, has_permission,
-                     invoke_exception_view
+                     invoke_exception_view, localizer, response, session
 
    .. attribute:: context
 
@@ -166,19 +166,17 @@
 
    .. attribute:: authenticated_userid
 
-      .. versionadded:: 1.5
-
       A property which returns the :term:`userid` of the currently
-      authenticated user or ``None`` if there is no :term:`authentication
-      policy` in effect or there is no currently authenticated user.  This
-      differs from :attr:`~pyramid.request.Request.unauthenticated_userid`,
-      because the effective authentication policy will have ensured that a
-      record associated with the :term:`userid` exists in persistent storage;
-      if it has not, this value will be ``None``.
+      authenticated user or ``None`` if there is no :term:`security policy` in
+      effect or there is no currently authenticated user.
 
    .. attribute:: unauthenticated_userid
 
-      .. versionadded:: 1.5
+      .. deprecated:: 2.0
+
+          ``unauthenticated_userid`` has been deprecated in version 2.0.  Use
+          :attr:`authenticated_userid` or :attr:`identity` instead.  See
+          :ref:`upgrading_auth_20` for more information.
 
       A property which returns a value which represents the *claimed* (not
       verified) :term:`userid` of the credentials present in the
@@ -193,7 +191,10 @@
 
    .. attribute:: effective_principals
 
-      .. versionadded:: 1.5
+      .. deprecated:: 2.0
+
+          The new security policy has removed the concept of principals.  See
+          :ref:`upgrading_auth_20` for more information.
 
       A property which returns the list of 'effective' :term:`principal`
       identifiers for this request.  This list typically includes the
@@ -201,7 +202,7 @@
       currently authenticated, but this depends on the
       :term:`authentication policy` in effect.  If no :term:`authentication
       policy` is in effect, this will return a sequence containing only the
-      :attr:`pyramid.security.Everyone` principal.
+      :attr:`pyramid.authorization.Everyone` principal.
 
    .. method:: invoke_subrequest(request, use_tweens=False)
 
@@ -228,8 +229,7 @@
         handed.
 
       - sets request extensions (such as those added via
-        :meth:`~pyramid.config.Configurator.add_request_method` or
-        :meth:`~pyramid.config.Configurator.set_request_property`) on the
+        :meth:`~pyramid.config.Configurator.add_request_method`) on the
         request it's passed.
 
       - causes a :class:`~pyramid.events.NewRequest` event to be sent at the
@@ -284,17 +284,6 @@
 
    .. automethod:: resource_path
 
-   .. attribute:: json_body
-
-       This property will return the JSON-decoded variant of the request
-       body.  If the request body is not well-formed JSON, or there is no
-       body associated with this request, this property will raise an
-       exception.
-       
-       .. seealso::
-       
-           See also :ref:`request_json_body`.
-
    .. method:: set_property(callable, name=None, reify=False)
 
        Add a callable or a property descriptor to the request instance.
@@ -321,25 +310,25 @@
        from the name of the ``callable``.
 
        .. code-block:: python
-          :linenos:
+           :linenos:
 
-          def _connect(request):
-              conn = request.registry.dbsession()
-              def cleanup(request):
-                  # since version 1.5, request.exception is no
-                  # longer eagerly cleared
-                  if request.exception is not None:
-                      conn.rollback()
-                  else:
-                      conn.commit()
-                  conn.close()
-              request.add_finished_callback(cleanup)
-              return conn
+           def _connect(request):
+               conn = request.registry.dbsession()
+               def cleanup(request):
+                   # since version 1.5, request.exception is no
+                   # longer eagerly cleared
+                   if request.exception is not None:
+                       conn.rollback()
+                   else:
+                       conn.commit()
+                   conn.close()
+               request.add_finished_callback(cleanup)
+               return conn
 
-          @subscriber(NewRequest)
-          def new_request(event):
-              request = event.request
-              request.set_property(_connect, 'db', reify=True)
+           @subscriber(NewRequest)
+           def new_request(event):
+               request = event.request
+               request.set_property(_connect, 'db', reify=True)
 
        The subscriber doesn't actually connect to the database, it just
        provides the API which, when accessed via ``request.db``, will
@@ -373,3 +362,6 @@
    see :class:`pyramid.interfaces.IMultiDict`.
 
 .. autofunction:: apply_request_extensions(request)
+
+.. autoclass:: RequestLocalCache
+    :members:

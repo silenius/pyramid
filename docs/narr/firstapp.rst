@@ -23,24 +23,24 @@ Here's one of the very simplest :app:`Pyramid` applications:
 
 When this code is inserted into a Python script named ``helloworld.py`` and
 executed by a Python interpreter which has the :app:`Pyramid` software
-installed, an HTTP server is started on TCP port 8080.
+installed, an HTTP server is started on TCP port 6543.
 
-On UNIX:
+On Unix:
 
 .. code-block:: bash
 
-   $ $VENV/bin/python helloworld.py
+    $VENV/bin/python helloworld.py
 
 On Windows:
 
 .. code-block:: doscon
 
-   c:\> %VENV%\Scripts\python helloworld.py
+    %VENV%\Scripts\python helloworld.py
 
 This command will not return and nothing will be printed to the console. When
-port 8080 is visited by a browser on the URL ``/hello/world``, the server will
+port 6543 is visited by a browser on the URL ``/``, the server will
 simply serve up the text "Hello world!".  If your application is running on
-your local system, using `<http://localhost:8080/hello/world>`_ in a browser
+your local system, using `<http://localhost:6543/>`_ in a browser
 will show this result.
 
 Each time you visit a URL served by the application in a browser, a logging
@@ -60,18 +60,18 @@ Imports
 The above ``helloworld.py`` script uses the following set of import statements:
 
 .. literalinclude:: helloworld.py
-   :linenos:
+   :lineno-match:
    :lines: 1-3
-
-The script imports the :class:`~pyramid.config.Configurator` class from the
-:mod:`pyramid.config` module.  An instance of the
-:class:`~pyramid.config.Configurator` class is later used to configure your
-:app:`Pyramid` application.
 
 Like many other Python web frameworks, :app:`Pyramid` uses the :term:`WSGI`
 protocol to connect an application and a web server together.  The
 :mod:`wsgiref` server is used in this example as a WSGI server for convenience,
 as it is shipped within the Python standard library.
+
+The script imports the :class:`~pyramid.config.Configurator` class from the
+:mod:`pyramid.config` module.  An instance of the
+:class:`~pyramid.config.Configurator` class is later used to configure your
+:app:`Pyramid` application.
 
 The script also imports the :class:`pyramid.response.Response` class for later
 use.  An instance of this class will be used to create a web response.
@@ -83,7 +83,7 @@ The above script, beneath its set of imports, defines a function named
 ``hello_world``.
 
 .. literalinclude:: helloworld.py
-   :linenos:
+   :lineno-match:
    :pyobject: hello_world
 
 The function accepts a single argument (``request``) and it returns an instance
@@ -125,8 +125,8 @@ imports and function definitions, placed within the confines of an ``if``
 statement:
 
 .. literalinclude:: helloworld.py
-   :linenos:
-   :lines: 9-15
+   :lineno-match:
+   :lines: 10-16
 
 Let's break this down piece by piece.
 
@@ -134,8 +134,8 @@ Configurator Construction
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. literalinclude:: helloworld.py
-   :linenos:
-   :lines: 9-10
+   :lineno-match:
+   :lines: 10-11
 
 The ``if __name__ == '__main__':`` line in the code sample above represents a
 Python idiom: the code inside this if clause is not invoked unless the script
@@ -153,8 +153,8 @@ code within the ``if`` statement to execute if this module is imported from
 another; the code within the ``if`` block should only be run during a direct
 script execution.
 
-The ``config = Configurator()`` line above creates an instance of the
-:class:`~pyramid.config.Configurator` class.  The resulting ``config`` object
+The ``with Configurator() as config:`` line above creates an instance of the
+:class:`~pyramid.config.Configurator` class using a :term:`context manager`.  The resulting ``config`` object
 represents an API which the script uses to configure this particular
 :app:`Pyramid` application.  Methods called on the Configurator will cause
 registrations to be made in an :term:`application registry` associated with the
@@ -166,12 +166,11 @@ Adding Configuration
 ~~~~~~~~~~~~~~~~~~~~
 
 .. literalinclude:: helloworld.py
-   :linenos:
-   :lines: 11-12
+   :lineno-match:
+   :lines: 12-13
 
 The first line above calls the :meth:`pyramid.config.Configurator.add_route`
-method, which registers a :term:`route` to match any URL path that begins with
-``/hello/`` followed by a string.
+method, which registers a :term:`route` to the root (``/``) URL path.
 
 The second line registers the ``hello_world`` function as a :term:`view
 callable` and makes sure that it will be called when the ``hello`` route is
@@ -185,8 +184,8 @@ WSGI Application Creation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. literalinclude:: helloworld.py
-   :linenos:
-   :lines: 13
+   :lineno-match:
+   :lines: 14
 
 After configuring views and ending configuration, the script creates a WSGI
 *application* via the :meth:`pyramid.config.Configurator.make_wsgi_app` method.
@@ -197,7 +196,7 @@ method returns a :term:`WSGI` application object that can be used by any WSGI
 server to present an application to a requestor. :term:`WSGI` is a protocol
 that allows servers to talk to Python applications.  We don't discuss
 :term:`WSGI` in any depth within this book, but you can learn more about it by
-reading its `documentation <http://wsgi.readthedocs.org/en/latest/>`_.
+reading its `documentation <https://wsgi.readthedocs.io/en/latest/>`_.
 
 The :app:`Pyramid` application object, in particular, is an instance of a class
 representing a :app:`Pyramid` :term:`router`.  It has a reference to the
@@ -212,8 +211,8 @@ WSGI Application Serving
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. literalinclude:: helloworld.py
-   :linenos:
-   :lines: 14-15
+   :lineno-match:
+   :lines: 15-16
 
 Finally, we actually serve the application to requestors by starting up a WSGI
 server.  We happen to use the :mod:`wsgiref` ``make_server`` server maker for
@@ -221,14 +220,14 @@ this purpose.  We pass in as the first argument ``'0.0.0.0'``, which means
 "listen on all TCP interfaces".  By default, the HTTP server listens only on
 the ``127.0.0.1`` interface, which is problematic if you're running the server
 on a remote system and you wish to access it with a web browser from a local
-system.  We also specify a TCP port number to listen on, which is 8080, passing
+system.  We also specify a TCP port number to listen on, which is 6543, passing
 it as the second argument.  The final argument is the ``app`` object (a
 :term:`router`), which is the application we wish to serve.  Finally, we call
 the server's ``serve_forever`` method, which starts the main loop in which it
 will wait for requests from the outside world.
 
 When this line is invoked, it causes the server to start listening on TCP port
-8080.  The server will serve requests forever, or at least until we stop it by
+6543.  The server will serve requests forever, or at least until we stop it by
 killing the process which runs it (usually by pressing ``Ctrl-C`` or
 ``Ctrl-Break`` in the terminal we used to start it).
 

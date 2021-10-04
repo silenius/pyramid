@@ -12,8 +12,7 @@ application.
 
 This chapter describes how to configure sessions, what session implementations
 :app:`Pyramid` provides out of the box, how to store and retrieve data from
-sessions, and two session-specific features: flash messages, and cross-site
-request forgery attack prevention.
+sessions, and a session-specific feature: flash messages.
 
 .. index::
    single: session factory (default)
@@ -26,7 +25,7 @@ Using the Default Session Factory
 In order to use sessions, you must set up a :term:`session factory` during your
 :app:`Pyramid` configuration.
 
-A very basic, insecure sample session factory implementation is provided in the
+A very basic session factory implementation is provided in the
 :app:`Pyramid` core.  It uses a cookie to store session information.  This
 implementation has the following limitations:
 
@@ -39,37 +38,39 @@ implementation has the following limitations:
   of the session is fewer than 4000.  This is suitable only for very small data
   sets.
 
-It is digitally signed, however, and thus its data cannot easily be tampered
-with.
+It is digitally signed, however, and thus a client cannot easily tamper with
+the content without having access to the secret key.
 
 You can configure this session factory in your :app:`Pyramid` application by
 using the :meth:`pyramid.config.Configurator.set_session_factory` method.
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   from pyramid.session import SignedCookieSessionFactory
-   my_session_factory = SignedCookieSessionFactory('itsaseekreet')
+    from pyramid.session import SignedCookieSessionFactory
+    my_session_factory = SignedCookieSessionFactory('itsaseekreet')
 
-   from pyramid.config import Configurator
-   config = Configurator()
-   config.set_session_factory(my_session_factory)
+    from pyramid.config import Configurator
+    config = Configurator()
+    config.set_session_factory(my_session_factory)
 
 .. warning::
 
    By default the :func:`~pyramid.session.SignedCookieSessionFactory`
-   implementation is *unencrypted*.  You should not use it when you keep
-   sensitive information in the session object, as the information can be
-   easily read by both users of your application and third parties who have
-   access to your users' network traffic.  And, if you use this sessioning
-   implementation, and you inadvertently create a cross-site scripting
-   vulnerability in your application, because the session data is stored
-   unencrypted in a cookie, it will also be easier for evildoers to obtain the
-   current user's cross-site scripting token.  In short, use a different
-   session factory implementation (preferably one which keeps session data on
-   the server) for anything but the most basic of applications where "session
-   security doesn't matter", and you are sure your application has no
-   cross-site scripting vulnerabilities.
+   implementation contains the following security concerns:
+
+   - Session data is *unencrypted* (but it is signed / authenticated).
+
+     This means an attacker cannot change the session data, but they can view it.
+     You should not use it when you keep sensitive information in the session object, as the information can be easily read by both users of your application and third parties who have access to your users' network traffic.
+
+     At the very least, use TLS and set ``secure=True`` to avoid arbitrary users on the network from viewing the session contents.
+
+   - If you use this sessioning implementation, and you inadvertently create a cross-site scripting vulnerability in your application, because the session data is stored unencrypted in a cookie, it will also be easier for evildoers to obtain the current user's cross-site scripting token.
+
+     Set ``httponly=True`` to mitigate this vulnerability by hiding the cookie from client-side JavaScript.
+
+   In short, use a different session factory implementation (preferably one which keeps session data on the server) for anything but the most basic of applications where "session security doesn't matter", you are sure your application has no cross-site scripting vulnerabilities, and you are confident your secret key will not be exposed.
 
 .. index::
    single: session object
@@ -82,19 +83,19 @@ session objects provided by the session factory via the ``session`` attribute
 of any :term:`request` object.  For example:
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
-   from pyramid.response import Response
+    from pyramid.response import Response
 
-   def myview(request):
-       session = request.session
-       if 'abc' in session:
-           session['fred'] = 'yes'
-       session['abc'] = '123'
-       if 'fred' in session:
-           return Response('Fred was in the session')
-       else:
-           return Response('Fred was not in the session')
+    def myview(request):
+        session = request.session
+        if 'abc' in session:
+            session['fred'] = 'yes'
+        session['abc'] = '123'
+        if 'fred' in session:
+            return Response('Fred was in the session')
+        else:
+            return Response('Fred was not in the session')
 
 The first time this view is invoked produces ``Fred was not in the session``.
 Subsequent invocations produce ``Fred was in the session``, assuming of course
@@ -127,11 +128,10 @@ object are in the :class:`pyramid.interfaces.ISession` documentation.
 
 Some gotchas:
 
-- Keys and values of session data must be *pickleable*.  This means, typically,
-  that they are instances of basic types of objects, such as strings, lists,
-  dictionaries, tuples, integers, etc.  If you place an object in a session
-  data key or value that is not pickleable, an error will be raised when the
-  session is serialized.
+- Keys and values of session data must be JSON-serializable.
+  This means, typically, that they are instances of basic types of objects, such as strings, lists, dictionaries, tuples, integers, etc.
+  If you place an object in a session data key or value that is not JSON-serializable, an error will be raised when the session is serialized.
+  Please also see :ref:`upgrading_session_20`.
 
 - If you place a mutable value (for example, a list or a dictionary) in a
   session object, and you subsequently mutate that value, you must call the
@@ -171,14 +171,14 @@ pyramid_beaker_         Beaker_ Session factory for Pyramid
                                 sessioning system.
 ======================= ======= =============================
 
-.. _pyramid_nacl_session: https://pypi.python.org/pypi/pyramid_nacl_session
+.. _pyramid_nacl_session: https://pypi.org/project/pyramid_nacl_session/
 .. _PyNaCl: https://pynacl.readthedocs.io/en/latest/secret/
 
-.. _pyramid_redis_sessions: https://pypi.python.org/pypi/pyramid_redis_sessions
-.. _Redis: http://redis.io/
+.. _pyramid_redis_sessions: https://pypi.org/project/pyramid_redis_sessions/
+.. _Redis: https://redis.io/
 
-.. _pyramid_beaker: https://pypi.python.org/pypi/pyramid_beaker
-.. _Beaker: http://beaker.readthedocs.org/en/latest/
+.. _pyramid_beaker: https://pypi.org/project/pyramid_beaker/
+.. _Beaker: https://beaker.readthedocs.io/en/latest/
 
 .. index::
    single: session factory (custom)
@@ -224,7 +224,7 @@ method:
 
 .. code-block:: python
 
-   request.session.flash('mymessage')
+    request.session.flash('mymessage')
 
 The ``flash()`` method appends a message to a flash queue, creating the queue
 if necessary.
@@ -247,7 +247,7 @@ represents the default flash message queue.
 
 .. code-block:: python
 
-   request.session.flash(msg, 'myappsqueue')
+    request.session.flash(msg, 'myappsqueue')
 
 The ``allow_duplicate`` argument defaults to ``True``.  If this is ``False``,
 and you attempt to add a message value which is already present in the queue,
@@ -316,183 +316,3 @@ flash storage.
    ['info message']
    >>> request.session.peek_flash()
    []
-
-.. index::
-   single: preventing cross-site request forgery attacks
-   single: cross-site request forgery attacks, prevention
-
-Preventing Cross-Site Request Forgery Attacks
----------------------------------------------
-
-`Cross-site request forgery
-<https://en.wikipedia.org/wiki/Cross-site_request_forgery>`_ attacks are a
-phenomenon whereby a user who is logged in to your website might inadvertantly
-load a URL because it is linked from, or embedded in, an attacker's website.
-If the URL is one that may modify or delete data, the consequences can be dire.
-
-You can avoid most of these attacks by issuing a unique token to the browser
-and then requiring that it be present in all potentially unsafe requests.
-:app:`Pyramid` sessions provide facilities to create and check CSRF tokens.
-
-To use CSRF tokens, you must first enable a :term:`session factory` as
-described in :ref:`using_the_default_session_factory` or
-:ref:`using_alternate_session_factories`.
-
-.. index::
-   single: session.get_csrf_token
-
-Using the ``session.get_csrf_token`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To get the current CSRF token from the session, use the
-``session.get_csrf_token()`` method.
-
-.. code-block:: python
-
-   token = request.session.get_csrf_token()
-
-The ``session.get_csrf_token()`` method accepts no arguments.  It returns a
-CSRF *token* string. If ``session.get_csrf_token()`` or
-``session.new_csrf_token()`` was invoked previously for this session, then the
-existing token will be returned.  If no CSRF token previously existed for this
-session, then a new token will be set into the session and returned.  The newly
-created token will be opaque and randomized.
-
-You can use the returned token as the value of a hidden field in a form that
-posts to a method that requires elevated privileges, or supply it as a request
-header in AJAX requests.
-
-For example, include the CSRF token as a hidden field:
-
-.. code-block:: html
-
-    <form method="post" action="/myview">
-      <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}">
-      <input type="submit" value="Delete Everything">
-    </form>
-
-Or include it as a header in a jQuery AJAX request:
-
-.. code-block:: javascript
-
-    var csrfToken = ${request.session.get_csrf_token()};
-    $.ajax({
-      type: "POST",
-      url: "/myview",
-      headers: { 'X-CSRF-Token': csrfToken }
-    }).done(function() {
-      alert("Deleted");
-    });
-
-The handler for the URL that receives the request should then require that the
-correct CSRF token is supplied.
-
-.. index::
-   single: session.new_csrf_token
-
-Using the ``session.new_csrf_token`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To explicitly create a new CSRF token, use the ``session.new_csrf_token()``
-method.  This differs only from ``session.get_csrf_token()`` inasmuch as it
-clears any existing CSRF token, creates a new CSRF token, sets the token into
-the session, and returns the token.
-
-.. code-block:: python
-
-   token = request.session.new_csrf_token()
-
-Checking CSRF Tokens Manually
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-In request handling code, you can check the presence and validity of a CSRF
-token with :func:`pyramid.session.check_csrf_token`. If the token is valid, it
-will return ``True``, otherwise it will raise ``HTTPBadRequest``. Optionally,
-you can specify ``raises=False`` to have the check return ``False`` instead of
-raising an exception.
-
-By default, it checks for a POST parameter named ``csrf_token`` or a header
-named ``X-CSRF-Token``.
-
-.. code-block:: python
-
-   from pyramid.session import check_csrf_token
-
-   def myview(request):
-       # Require CSRF Token
-       check_csrf_token(request)
-
-       # ...
-
-.. _auto_csrf_checking:
-
-Checking CSRF Tokens Automatically
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. versionadded:: 1.7
-
-:app:`Pyramid` supports automatically checking CSRF tokens on requests with an
-unsafe method as defined by RFC2616. Any other request may be checked manually.
-This feature can be turned on globally for an application using the
-:meth:`pyramid.config.Configurator.set_default_csrf_options` directive.
-For example:
-
-.. code-block:: python
-
-   from pyramid.config import Configurator
-
-   config = Configurator()
-   config.set_default_csrf_options(require_csrf=True)
-
-CSRF checking may be explicitly enabled or disabled on a per-view basis using
-the ``require_csrf`` view option. A value of ``True`` or ``False`` will
-override the default set by ``set_default_csrf_options``. For example:
-
-.. code-block:: python
-
-   @view_config(route_name='hello', require_csrf=False)
-   def myview(request):
-       # ...
-
-When CSRF checking is active, the token and header used to find the
-supplied CSRF token will be ``csrf_token`` and ``X-CSRF-Token``, respectively,
-unless otherwise overridden by ``set_default_csrf_options``. The token is
-checked against the value in ``request.POST`` which is the submitted form body.
-If this value is not present, then the header will be checked.
-
-In addition to token based CSRF checks, if the request is using HTTPS then the
-automatic CSRF checking will also check the referrer of the request to ensure
-that it matches one of the trusted origins. By default the only trusted origin
-is the current host, however additional origins may be configured by setting
-``pyramid.csrf_trusted_origins`` to a list of domain names (and ports if they
-are non standard). If a host in the list of domains starts with a ``.`` then
-that will allow all subdomains as well as the domain without the ``.``.
-
-If CSRF checks fail then a :class:`pyramid.exceptions.BadCSRFToken` or
-:class:`pyramid.exceptions.BadCSRFOrigin` exception will be raised. This
-exception may be caught and handled by an :term:`exception view` but, by
-default, will result in a ``400 Bad Request`` response being sent to the
-client.
-
-Checking CSRF Tokens with a View Predicate
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. deprecated:: 1.7
-   Use the ``require_csrf`` option or read :ref:`auto_csrf_checking` instead
-   to have :class:`pyramid.exceptions.BadCSRFToken` exceptions raised.
-
-A convenient way to require a valid CSRF token for a particular view is to
-include ``check_csrf=True`` as a view predicate. See
-:meth:`pyramid.config.Configurator.add_view`.
-
-.. code-block:: python
-
-    @view_config(request_method='POST', check_csrf=True, ...)
-    def myview(request):
-        ...
-
-.. note::
-   A mismatch of a CSRF token is treated like any other predicate miss, and the
-   predicate system, when it doesn't find a view, raises ``HTTPNotFound``
-   instead of ``HTTPBadRequest``, so ``check_csrf=True`` behavior is different
-   from calling :func:`pyramid.session.check_csrf_token`.

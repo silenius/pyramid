@@ -26,7 +26,7 @@ part of a web application, web developers need a robust, mature set of software
 for web requests and returning web responses.
 
 Pyramid has always fit nicely into the existing world of Python web development
-(virtual environments, packaging, scaffolding, first to embrace Python 3, and
+(virtual environments, packaging, cookiecutters, first to embrace Python 3, and
 so on). Pyramid turned to the well-regarded :term:`WebOb` Python library for
 request and response handling. In our example above, Pyramid hands
 ``hello_world`` a ``request`` that is :ref:`based on WebOb <webob_chapter>`.
@@ -39,37 +39,37 @@ Steps
 
    .. code-block:: bash
 
-    $ cd ..; cp -r view_classes request_response; cd request_response
-    $ $VENV/bin/pip install -e .
+       cd ..; cp -r view_classes request_response; cd request_response
+       $VENV/bin/pip install -e .
 
 #. Simplify the routes in ``request_response/tutorial/__init__.py``:
 
    .. literalinclude:: request_response/tutorial/__init__.py
-    :linenos:
+       :linenos:
 
 #. We only need one view in ``request_response/tutorial/views.py``:
 
    .. literalinclude:: request_response/tutorial/views.py
-    :linenos:
+       :linenos:
 
 #. Update the tests in ``request_response/tutorial/tests.py``:
 
    .. literalinclude:: request_response/tutorial/tests.py
-    :linenos:
+       :linenos:
 
 #. Now run the tests:
 
    .. code-block:: bash
 
-    $ $VENV/bin/py.test tutorial/tests.py -q
-    .....
-    5 passed in 0.30 seconds
+       $VENV/bin/pytest tutorial/tests.py -q
+       .....
+       5 passed in 0.30 seconds
 
 #. Run your Pyramid application with:
 
    .. code-block:: bash
 
-    $ $VENV/bin/pserve development.ini --reload
+       $VENV/bin/pserve development.ini --reload
 
 #. Open http://localhost:6543/ in your browser. You will be redirected to
    http://localhost:6543/plain.
@@ -91,7 +91,7 @@ the body of the response:
 
 .. code-block:: text
 
-  URL http://localhost:6543/plain?name=alice with name: alice
+    URL http://localhost:6543/plain?name=alice with name: alice
 
 Finally, we set the response's content type and body, then return the response.
 
