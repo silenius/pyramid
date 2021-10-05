@@ -136,11 +136,6 @@ class PShellCommand:
 
         self.env = self.bootstrap(config_uri, options=config_vars)
 
-        # override environ if needed
-        env['request'].environ.update({
-            'tm.active': True
-        })
-
         # remove the closer from the env
         self.closer = self.env.pop('closer')
 
