@@ -947,13 +947,6 @@ class AuthTktCookieHelper:
 
        Optional.
 
-    ``debug``
-
-        Default: ``False``.  If ``debug`` is ``True``, log messages to the
-        Pyramid debug logger about the results of various authentication
-        steps.  The output from debugging is useful for reporting to maillist
-        or IRC channels when asking for support. Optional.
-
     ``samesite``
 
         Default: ``'Lax'``.  The 'samesite' option of the session cookie. Set
